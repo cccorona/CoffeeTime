@@ -3,4 +3,14 @@
 
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="facebook_application_id" translatable="false">1918159491760571</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">6d54ab3d65d4b9c0a13a768469c270c6</string>
+    <string name="twitter_consumer_key" translatable="false">rfosAWHO9cQNrIUP910j8HYOg</string>
+    <string name="twitter_consumer_secret" translatable="false">rZvALWnJ19qV0J6jMgP7fOi8fNwHhoBZwKijCnkRms2V9eMhO6</string>
+    <string name="tos_url">www.cesarcorona.com.mx</string>
+    <string name="sign_in_cancelled">inicio cancelado</string>
+    <string name="no_internet_connection">sin conexion a internet</string>
+    <string name="unknown_error">error desconocido</string>
+
 </resources>

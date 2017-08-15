@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:background="#0099cc"
     android:orientation="vertical"
+    android:id="@+id/root_view"
     tools:context="mx.com.cesarcorona.coffeetime.activities.SplashActivity">
 
 
