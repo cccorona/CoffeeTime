@@ -20,7 +20,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".MainActivity" />
+        <activity
+            android:name=".activities.CoffeTimeActiviy"
+            android:label="@string/title_activity_coffe_time_activiy"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

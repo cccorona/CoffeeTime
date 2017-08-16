@@ -6,7 +6,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -31,7 +31,7 @@ public class SplashActivity extends AppCompatActivity {
     private static final boolean DEBUG = true;
 
     private FirebaseAuth auth;
-    private LinearLayout rootView;
+    private RelativeLayout rootView;
 
 
 
@@ -43,7 +43,7 @@ public class SplashActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_splash);
         auth = FirebaseAuth.getInstance();
-        rootView = (LinearLayout) findViewById(R.id.root_view);
+        rootView = (RelativeLayout) findViewById(R.id.root_view);
 
 
         TimerTask task = new TimerTask() {
@@ -88,7 +88,9 @@ public class SplashActivity extends AppCompatActivity {
                         .setTosUrl(getString(R.string.tos_url))
                         .setPrivacyPolicyUrl(getString(R.string.tos_url))
                         .setIsSmartLockEnabled(!DEBUG)
-                        .setTheme(R.style.AppTheme)
+                        .setTheme(R.style.LoginTheme)
+                        .setLogo(R.drawable.ic_logo_cofe)
+
                         .build(),
                 RC_SIGN_IN);
     }
@@ -132,4 +134,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onBackPressed() {
+    }
 } // Fin SplashScreen.java

@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "180952554638-3khq79trj59hobc55i8e3cs2lcuek840.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "mx.com.cesarcorona.coffeetime",
+            "certificate_hash": "db473645b04eb607b7ac2be25f626f1fd10a6d7d"
+          }
+        },
+        {
           "client_id": "180952554638-0datuod54rpohfh1faeukhiei48e0fvi.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "180952554638-0datuod54rpohfh1faeukhiei48e0fvi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2
