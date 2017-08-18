@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import mx.com.cesarcorona.coffeetime.activities.CoffeTimeActiviy;
 
@@ -35,6 +38,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 checkDatesActivity();
+            }
+        });
+
+        Button logout = (Button) findViewById(R.id.log_out_button);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                finish();
             }
         });
 

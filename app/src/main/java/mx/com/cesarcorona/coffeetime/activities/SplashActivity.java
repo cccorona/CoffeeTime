@@ -1,9 +1,14 @@
 package mx.com.cesarcorona.coffeetime.activities;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
@@ -15,6 +20,8 @@ import com.firebase.ui.auth.ResultCodes;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -44,6 +51,19 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         auth = FirebaseAuth.getInstance();
         rootView = (RelativeLayout) findViewById(R.id.root_view);
+
+       /* try {
+            PackageInfo info = getPackageManager().getPackageInfo("mx.com.cesarcorona.coffeetime", PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.e("MY KEY HASH:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+
+        } catch (NoSuchAlgorithmException e) {
+
+        }*/
 
 
         TimerTask task = new TimerTask() {
@@ -85,8 +105,8 @@ public class SplashActivity extends AppCompatActivity {
                                         new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
                                         new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
                                         new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build()))
-                        .setTosUrl(getString(R.string.tos_url))
-                        .setPrivacyPolicyUrl(getString(R.string.tos_url))
+                        //.setTosUrl(getString(R.string.tos_url))
+                        //.setPrivacyPolicyUrl(getString(R.string.tos_url))
                         .setIsSmartLockEnabled(!DEBUG)
                         .setTheme(R.style.LoginTheme)
                         .setLogo(R.drawable.ic_logo_cofe)

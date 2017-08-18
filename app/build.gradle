@@ -9,6 +9,8 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -19,11 +21,22 @@ android {
     }
 }
 
+configurations{
+
+    all*.exclude group: 'com.google.firebase.iid', module: 'firebase-iid-11.0.4'
+
+    all*.exclude group: 'com.google.firebase.iid', module: 'play-services-tasks-11.0.4'
+
+}
+
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    compile 'com.android.support:multidex:1.0.1'
+
 
     // Required only if Facebook login support is required
 
@@ -34,8 +47,9 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.4.0'
     compile 'com.android.support:support-v4:25.4.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.google.firebase:firebase-core:11.0.4'
+
     compile 'com.firebaseui:firebase-ui:2.2.0'
-    compile 'com.firebaseui:firebase-ui-auth:2.2.0'
     compile 'com.facebook.android:facebook-android-sdk:4.22.1'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.android.support:cardview-v7:25.4.0'
