@@ -71,7 +71,7 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 Thread.currentThread()
                         .setName(this.getClass().getSimpleName() + ": " + Thread.currentThread().getName());
-
+                if(DEBUG)gotoActivity(FilterActivity.class);
                 if (auth.getCurrentUser() != null) {
                     goToMainActivity();
                 } else {
@@ -157,4 +157,10 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
     }
+
+    private void gotoActivity(Class clase){
+        startActivity(new Intent(this,clase));
+        finish();
+    }
+
 } // Fin SplashScreen.java

@@ -9,8 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_application_id"/>
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_application_id" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBvBg4DS_-W3ftnpW4U4LcXbj2LVmnZmEM" />
 
         <activity
             android:name=".activities.SplashActivity"
@@ -27,7 +31,8 @@
         <activity
             android:name=".activities.CoffeTimeActiviy"
             android:label="@string/title_activity_coffe_time_activiy"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".activities.FilterActivity"></activity>
     </application>
 
 </manifest>
