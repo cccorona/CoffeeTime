@@ -17,5 +17,6 @@
     <string name="cafe">Cáfe</string>
     <string name="merienda">Merienda</string>
     <string name="title_activity_coffe_time_activiy">CoffeTimeActiviy</string>
+    <string name="current_position">Estas aqui</string>
 
 </resources>
