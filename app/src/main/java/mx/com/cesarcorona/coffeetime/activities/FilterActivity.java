@@ -6,6 +6,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -269,6 +271,8 @@ public class FilterActivity extends AppCompatActivity implements OnMapReadyCallb
                 .position(new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude()))
                 .title(getString(R.string.current_position))).showInfoWindow();
         currentMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude()),MAX_ZOOM));
+        latitud = currentLocation.getLatitude();
+        longitud = currentLocation.getLongitude();
     }
 
 
@@ -282,6 +286,18 @@ public class FilterActivity extends AppCompatActivity implements OnMapReadyCallb
             pDialog.dismiss();
     }
 
+    private void searchPlaces() {
+        new NRPlaces.Builder()
+                .listener(this)
+                .key(getString(R.string.google_api_key))
+                .latlng(latitud, longitud)
+                .radius(500)
+                .type(PlaceType.GYM)
+                .build()
+                .execute();
+    }
+
+
     @Override
     public void OnCategoryClicked(Categoria categoria) {
 
@@ -292,16 +308,6 @@ public class FilterActivity extends AppCompatActivity implements OnMapReadyCallb
 
     }
 
-    private void searchPlaces() {
-        new NRPlaces.Builder()
-                .listener(this)
-                .key("KEY")
-                .latlng(33.721328, 73.057838)
-                .radius(500)
-                .type(PlaceType.GYM)
-                .build()
-                .execute();
-    }
 
     @Override
     public void onPlacesFailure(PlacesException e) {
@@ -314,7 +320,21 @@ public class FilterActivity extends AppCompatActivity implements OnMapReadyCallb
     }
 
     @Override
-    public void onPlacesSuccess(List<noman.googleplaces.Place> places) {
+    public void onPlacesSuccess(final List<noman.googleplaces.Place> places) {
+
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("UI thread", "I am the UI thread");
+                for(noman.googleplaces.Place place :places){
+                    currentMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(place.getLatitude(),place.getLongitude()))
+                            .title(place.getName())).showInfoWindow();
+                    // currentMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude()),MAX_ZOOM));
+                }
+            }
+        });
+
 
     }
 
