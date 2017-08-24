@@ -2,6 +2,7 @@ package mx.com.cesarcorona.coffeetime.activities;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
@@ -10,20 +11,29 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import mx.com.cesarcorona.coffeetime.MainActivity;
 import mx.com.cesarcorona.coffeetime.R;
 
 public class CoffeTimeActiviy extends AppCompatActivity implements DatePickerDialog.OnDateSetListener ,
         TimePickerDialog.OnTimeSetListener{
 
 
+
+    public static String KEY_DATE ="date";
+    public static String KEY_TIME ="time";
+
+
     private Calendar myCalendar;
     private EditText dateEditText , timeEditText;
     private ImageView dateSelector , timeSelector;
+    private String dateSelected , timeSelected;
+    private ImageView homeButton ,nextButtton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +65,36 @@ public class CoffeTimeActiviy extends AppCompatActivity implements DatePickerDia
         });
 
 
+        homeButton = (ImageView) findViewById(R.id.home_icon);
+        nextButtton = (ImageView) findViewById(R.id.next_icon);
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent homeActivity = new Intent(CoffeTimeActiviy.this, MainActivity.class);
+                startActivity(homeActivity);
+                finish();
+            }
+        });
+
+        nextButtton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                 if(dateSelected == null || timeSelected == null){
+                     Toast.makeText(CoffeTimeActiviy.this,getString(R.string.warning),Toast.LENGTH_LONG).show();
+                 }else{
+                     Bundle extras = new Bundle();
+                     extras.putString(KEY_DATE,dateSelected);
+                     extras.putString(KEY_TIME,timeSelected);
+                     Intent filterIntent = new Intent(CoffeTimeActiviy.this,FilterActivity.class);
+                     filterIntent.putExtras(extras);
+                     startActivity(filterIntent);
+                     finish();
+
+                 }
+            }
+        });
+
+
 
 
     }
@@ -71,6 +111,7 @@ public class CoffeTimeActiviy extends AppCompatActivity implements DatePickerDia
         String myFormat = "MM/dd/yy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
         dateEditText.setText(sdf.format(myCalendar.getTime()));
+        dateSelected = dateEditText.getText().toString();
     }
 
     @Override
@@ -94,5 +135,6 @@ public class CoffeTimeActiviy extends AppCompatActivity implements DatePickerDia
         //Display the user changed time on TextView
         timeEditText.setText(String.valueOf(currentHour)
                 + " : " + String.valueOf(minute) + " " + aMpM + "\n");
+        timeSelected = timeEditText.getText().toString();
     }
 }

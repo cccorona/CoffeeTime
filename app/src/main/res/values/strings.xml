@@ -12,13 +12,22 @@
     <string name="twitter_consumer_secret" translatable="false">rZvALWnJ19qV0J6jMgP7fOi8fNwHhoBZwKijCnkRms2V9eMhO6</string>
     <string name="google_place_api_key">AIzaSyD_l3WeHf0w1YjcLjGDG1jaG-w_ap3Aq3U</string>
     <string name="tos_url">www.cesarcorona.com.mx</string>
-    <string name="sign_in_cancelled">inicio cancelado</string>
-    <string name="no_internet_connection">sin conexion a internet</string>
+    <string name="sign_in_cancelled">Cancel</string>
+    <string name="no_internet_connection">no red available</string>
     <string name="unknown_error">error desconocido</string>
-    <string name="cafe">Cáfe</string>
-    <string name="merienda">Merienda</string>
+    <string name="cafe">Coffee Time</string>
+    <string name="merienda">Meals</string>
     <string name="title_activity_coffe_time_activiy">CoffeTimeActiviy</string>
-    <string name="current_position">Estas aqui</string>
+    <string name="current_position">You are here</string>
+    <string name="set_your_coffee_time">Set your coffee time</string>
+    <string name="when">When?</string>
+    <string name="time">Time?</string>
+    <string name="warning">set time and date is needed</string>
+    <string name="what_do_you_want_to_eat">What do you want to eat?</string>
+    <string name="selected_category">at least a selected category is required</string>
+    <string name="selected_topic">at least a selected topic is required</string>
+    <string name="what_topic_do_you_prefer">what topic do you prefer?</string>
+    <string name="search">Searching</string>
 
 </resources>
 

@@ -9,8 +9,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.firebase.ui.auth.AuthUI;
@@ -42,6 +44,7 @@ public class SplashActivity extends AppCompatActivity {
 
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,8 +54,20 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         auth = FirebaseAuth.getInstance();
         rootView = (RelativeLayout) findViewById(R.id.root_view);
+        ImageView button = (ImageView) findViewById(R.id.coffe_loggo_button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (auth.getCurrentUser() != null) {
+                    goToMainActivity();
+                } else {
+                    startSiginRegisterIntent();
+                }
+            }
+        });
 
-       /* try {
+
+        try {
             PackageInfo info = getPackageManager().getPackageInfo("mx.com.cesarcorona.coffeetime", PackageManager.GET_SIGNATURES);
             for (Signature signature : info.signatures) {
                 MessageDigest md = MessageDigest.getInstance("SHA");
@@ -63,7 +78,7 @@ public class SplashActivity extends AppCompatActivity {
 
         } catch (NoSuchAlgorithmException e) {
 
-        }*/
+        }
 
 
         TimerTask task = new TimerTask() {
@@ -71,12 +86,7 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 Thread.currentThread()
                         .setName(this.getClass().getSimpleName() + ": " + Thread.currentThread().getName());
-                if(DEBUG)gotoActivity(FilterActivity.class);
-                if (auth.getCurrentUser() != null) {
-                    goToMainActivity();
-                } else {
-                    startSiginRegisterIntent();
-                }
+
 
 
             }
@@ -101,15 +111,14 @@ public class SplashActivity extends AppCompatActivity {
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setAvailableProviders(
-                                Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                Arrays.asList(
                                         new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-                                        new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
-                                        new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build()))
+                                        new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
                         //.setTosUrl(getString(R.string.tos_url))
                         //.setPrivacyPolicyUrl(getString(R.string.tos_url))
                         .setIsSmartLockEnabled(!DEBUG)
                         .setTheme(R.style.LoginTheme)
-                        .setLogo(R.drawable.ic_logo_cofe)
+                        .setLogo(R.drawable.coffe_logo)
 
                         .build(),
                 RC_SIGN_IN);

@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Escoga una opción:");
+        toolbar.setTitle("Choose an option:");
         setSupportActionBar(toolbar);
 
         cooffee = (CardView) findViewById(R.id.card_view_cofee);

@@ -16,9 +16,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -37,6 +39,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -44,6 +47,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -52,10 +56,14 @@ import mx.com.cesarcorona.coffeetime.MainActivity;
 import mx.com.cesarcorona.coffeetime.R;
 import mx.com.cesarcorona.coffeetime.adapter.CategoryAdapter;
 import mx.com.cesarcorona.coffeetime.pojo.Categoria;
+import mx.com.cesarcorona.coffeetime.pojo.Topic;
 import noman.googleplaces.NRPlaces;
 import noman.googleplaces.PlaceType;
 import noman.googleplaces.PlacesException;
 import noman.googleplaces.PlacesListener;
+
+import static mx.com.cesarcorona.coffeetime.activities.CoffeTimeActiviy.KEY_DATE;
+import static mx.com.cesarcorona.coffeetime.activities.CoffeTimeActiviy.KEY_TIME;
 
 public class FilterActivity extends AppCompatActivity implements OnMapReadyCallback ,CategoryAdapter.CategorySelectedListener, GoogleApiClient.OnConnectionFailedListener , PlacesListener{
 
@@ -63,6 +71,16 @@ public class FilterActivity extends AppCompatActivity implements OnMapReadyCallb
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 100;
     private static final int MAX_ZOOM = 16;
     private static final String CATEGORIAS_REFERENCE = "categorias";
+
+    public static String KEY_CATEGORIA="categoria";
+    public static String KEY_FAVORITE_PLACE="place";
+    public static String KEY_CURRENT_LATIDU="latitud";
+    public static String KEY_CURRENT_LONGITUD="longitud";
+    public static String KEY_PLACE_SELECTED="placeselected";
+
+
+
+    private String dateSelected,timeSelected;
 
 
     private FusedLocationProviderClient mFusedLocationClient;
@@ -81,6 +99,8 @@ public class FilterActivity extends AppCompatActivity implements OnMapReadyCallb
     private EditText buscarText;
     private ImageView homeButton, nextButtton, searchButton;
     private double latitud, longitud;
+    private noman.googleplaces.Place placeSeleccionado;
+    private List<noman.googleplaces.Place> placesFound;
 
 
     @Override
@@ -117,7 +137,36 @@ public class FilterActivity extends AppCompatActivity implements OnMapReadyCallb
         nextButtton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                 if(categoriaSeleccionada == null){
+                     Toast.makeText(FilterActivity.this,getString(R.string.selected_category),Toast.LENGTH_LONG).show();
+                 }else{
+                     Gson gson = new Gson();
+                     Bundle extras = new Bundle();
+                     extras.putString(KEY_DATE,dateSelected);
+                     extras.putString(KEY_TIME,timeSelected);
+                     extras.putSerializable(KEY_CATEGORIA,categoriaSeleccionada);
+                     if(ubicacionPreferida == null){
+                         extras.putString(KEY_FAVORITE_PLACE,"");
 
+                     }else{
+                         extras.putString(KEY_FAVORITE_PLACE,gson.toJson(ubicacionPreferida));
+
+                     }
+                     extras.putDouble(KEY_CURRENT_LATIDU,latitud);
+                     extras.putDouble(KEY_CURRENT_LONGITUD,longitud);
+                     if(placeSeleccionado == null){
+                         extras.putString(KEY_PLACE_SELECTED,"");
+
+                     }else{
+                         extras.putString(KEY_PLACE_SELECTED,gson.toJson(placeSeleccionado));
+
+                     }
+                     Intent filterIntent = new Intent(FilterActivity.this,FilterTopicsActivity.class);
+                     filterIntent.putExtras(extras);
+                     startActivity(filterIntent);
+                     finish();
+
+                 }
             }
         });
 
@@ -167,9 +216,18 @@ public class FilterActivity extends AppCompatActivity implements OnMapReadyCallb
                     allcategorias.add(categoria);
                 }
 
+                LinkedList<String> list = new LinkedList<String>();
+                for(Categoria topic:allcategorias){
+                    list.add(topic.getDisplay_title());
+                }
+                ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(FilterActivity.this,
+                        android.R.layout.simple_spinner_item, list);
+                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                categoriasSelector.setAdapter(dataAdapter);
+
                 categoryAdapter = new CategoryAdapter(allcategorias, FilterActivity.this);
-                categoryAdapter.setCategorySelectedListener(FilterActivity.this);
-                categoriasSelector.setAdapter(categoryAdapter);
+                //categoryAdapter.setCategorySelectedListener(FilterActivity.this);
+                //categoriasSelector.setAdapter(categoryAdapter);
                 hidepDialog();
 
             }
@@ -184,9 +242,10 @@ public class FilterActivity extends AppCompatActivity implements OnMapReadyCallb
         categoriasSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                categoriaSeleccionada = ((CategoryAdapter) parent.getAdapter()).getItem(position);
-                categoriasSelector.setSelection(position);
-                ((CategoryAdapter) parent.getAdapter()).notifyDataSetChanged();
+                categoriaSeleccionada = allcategorias.get(position);
+                Toast.makeText(parent.getContext(),
+                        "Category selected : " + parent.getItemAtPosition(position).toString(),
+                        Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -208,6 +267,9 @@ public class FilterActivity extends AppCompatActivity implements OnMapReadyCallb
             @Override
             public void onPlaceSelected(Place place) {
                 ubicacionPreferida = place;
+                latitud = ubicacionPreferida.getLatLng().latitude;
+                longitud = ubicacionPreferida.getLatLng().longitude;
+                centerLocationOnScreen();
 
             }
 
@@ -224,6 +286,9 @@ public class FilterActivity extends AppCompatActivity implements OnMapReadyCallb
                 .addApi(Places.PLACE_DETECTION_API)
                 .enableAutoManage(this, this)
                 .build();
+
+        dateSelected = getIntent().getExtras().getString(KEY_DATE);
+        timeSelected = getIntent().getExtras().getString(KEY_TIME);
 
     }
 
@@ -264,6 +329,23 @@ public class FilterActivity extends AppCompatActivity implements OnMapReadyCallb
     @Override
     public void onMapReady(GoogleMap googleMap) {
         currentMap = googleMap;
+        currentMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+
+                for(noman.googleplaces.Place plafes:placesFound){
+                    if(plafes.getLatitude() == marker.getPosition().latitude ){
+                        if(plafes.getLongitude() == marker.getPosition().longitude){
+                            placeSeleccionado = plafes;
+                            break;
+                        }
+                    }
+                }
+                marker.showInfoWindow();
+
+                return false;
+            }
+        });
     }
 
     private void centerLocationOnScreen(){
@@ -287,12 +369,20 @@ public class FilterActivity extends AppCompatActivity implements OnMapReadyCallb
     }
 
     private void searchPlaces() {
+
+
+        String keyWord ="";
+        if(categoriaSeleccionada != null){
+            keyWord = categoriaSeleccionada.getDisplay_title();
+        }else{
+            keyWord ="";
+        }
+
         new NRPlaces.Builder()
                 .listener(this)
                 .key(getString(R.string.google_api_key))
                 .latlng(latitud, longitud)
-                .radius(500)
-                .type(PlaceType.GYM)
+                .radius(500).keyword(keyWord)
                 .build()
                 .execute();
     }
@@ -322,10 +412,19 @@ public class FilterActivity extends AppCompatActivity implements OnMapReadyCallb
     @Override
     public void onPlacesSuccess(final List<noman.googleplaces.Place> places) {
 
+
+
+        placesFound = places;
+
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
                 Log.d("UI thread", "I am the UI thread");
+
+                currentMap.clear();
+                currentMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(latitud,longitud))
+                        .title(getString(R.string.current_position))).showInfoWindow();
                 for(noman.googleplaces.Place place :places){
                     currentMap.addMarker(new MarkerOptions()
                             .position(new LatLng(place.getLatitude(),place.getLongitude()))

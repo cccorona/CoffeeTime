@@ -3,21 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="mx.com.cesarcorona.coffeetime">
 
-
-
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-
-
     <application
-        tools:replace="android:allowBackup"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="android:allowBackup">
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_application_id" />
@@ -29,15 +25,7 @@
             android:name=".activities.SplashActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
-            android:theme="@style/FullscreenTheme">
-
-        </activity>
-        <activity android:name=".MainActivity" />
-        <activity
-            android:name=".activities.CoffeTimeActiviy"
-            android:label="@string/title_activity_coffe_time_activiy"
-            android:theme="@style/AppTheme" />
-        <activity android:name=".activities.FilterActivity">
+            android:theme="@style/FullscreenTheme" >
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,7 +33,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+            </activity>
+        <activity android:name=".MainActivity" />
+        <activity
+            android:name=".activities.CoffeTimeActiviy"
+            android:label="@string/title_activity_coffe_time_activiy"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".activities.FilterActivity"></activity>
+        <activity android:name=".activities.FilterTopicsActivity">
+
         </activity>
+        <activity android:name=".activities.SearchActivity"></activity>
     </application>
 
 </manifest>
