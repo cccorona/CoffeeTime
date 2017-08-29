@@ -1,5 +1,12 @@
 package mx.com.cesarcorona.coffeetime.pojo;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.io.Serializable;
 
 /**
@@ -16,6 +23,25 @@ public class CoffeDate implements Serializable {
     private double latitud;
     private double longitud;
     private String favoritePlace;
+
+
+
+    @Exclude
+    private UserProfile profile1;
+    @Exclude
+    private UserProfile profile2;
+    @Exclude
+    DatabaseReference databaseProfileReference;
+    @Exclude
+    FillInformationInterface fillInformationInterface;
+    @Exclude
+    private String dataBaseReference;
+
+
+    public interface FillInformationInterface{
+        void OnDataChangeSuccess();
+        void OnError(String error);
+    }
 
 
     public CoffeDate(String time, String placeId, String user1, double latitud, double longitud) {
@@ -91,5 +117,56 @@ public class CoffeDate implements Serializable {
 
     public void setFavoritePlace(String favoritePlace) {
         this.favoritePlace = favoritePlace;
+    }
+
+    public UserProfile getProfile1() {
+        return profile1;
+    }
+
+    public void setProfile1(UserProfile profile1) {
+        this.profile1 = profile1;
+    }
+
+    public UserProfile getProfile2() {
+        return profile2;
+    }
+
+    public void setProfile2(UserProfile profile2) {
+        this.profile2 = profile2;
+    }
+
+
+    public void setFillInformationInterface(FillInformationInterface fillInformationInterface) {
+        this.fillInformationInterface = fillInformationInterface;
+    }
+
+    public void fullFillUserProfileWithReference(String databaseReference){
+        databaseProfileReference = FirebaseDatabase.getInstance().getReference(databaseReference);
+        databaseProfileReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
+                profile1 = userProfile;
+                if(fillInformationInterface != null){
+                    fillInformationInterface.OnDataChangeSuccess();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                if(fillInformationInterface != null){
+                    fillInformationInterface.OnError(databaseError.getMessage());
+                }
+            }
+        });
+    }
+
+
+    public String getDataBaseReference() {
+        return dataBaseReference;
+    }
+
+    public void setDataBaseReference(String dataBaseReference) {
+        this.dataBaseReference = dataBaseReference;
     }
 }

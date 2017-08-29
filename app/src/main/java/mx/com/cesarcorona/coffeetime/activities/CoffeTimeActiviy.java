@@ -15,6 +15,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -25,6 +26,7 @@ import java.util.Locale;
 import mx.com.cesarcorona.coffeetime.MainActivity;
 import mx.com.cesarcorona.coffeetime.R;
 import mx.com.cesarcorona.coffeetime.pojo.User;
+import mx.com.cesarcorona.coffeetime.pojo.UserProfile;
 
 import static mx.com.cesarcorona.coffeetime.services.MyFirebaseInstanceIDService.KEY_TOKEN;
 import static mx.com.cesarcorona.coffeetime.services.MyFirebaseInstanceIDService.PREFERENCES_KEY;
@@ -38,6 +40,8 @@ public class CoffeTimeActiviy extends AppCompatActivity implements DatePickerDia
     public static String KEY_DATE ="date";
     public static String KEY_TIME ="time";
 
+    public static String USER_PROFILES_REFERENCE = "profiles";
+
 
     private Calendar myCalendar;
     private EditText dateEditText , timeEditText;
@@ -49,13 +53,7 @@ public class CoffeTimeActiviy extends AppCompatActivity implements DatePickerDia
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(USERS_REFERENCE);
-        if(FirebaseAuth.getInstance().getCurrentUser()!= null){
-            SharedPreferences sharedPreferences = getSharedPreferences(PREFERENCES_KEY,MODE_PRIVATE);
-            String token = sharedPreferences.getString(KEY_TOKEN,"");
-            User user = new User(FirebaseAuth.getInstance().getCurrentUser().getUid(),token);
-            databaseReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user);
-        }
+        initUserData();
         setContentView(R.layout.activity_coffe_time_activiy);
         myCalendar = Calendar.getInstance(Locale.getDefault());
         dateEditText= (EditText) findViewById(R.id.date_text);
@@ -155,4 +153,25 @@ public class CoffeTimeActiviy extends AppCompatActivity implements DatePickerDia
                 + " : " + String.valueOf(minute) + " " + aMpM + "\n");
         timeSelected = timeEditText.getText().toString();
     }
+
+
+    private void initUserData(){
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(USERS_REFERENCE);
+        if(FirebaseAuth.getInstance().getCurrentUser()!= null){
+            SharedPreferences sharedPreferences = getSharedPreferences(PREFERENCES_KEY,MODE_PRIVATE);
+            String token = sharedPreferences.getString(KEY_TOKEN,"");
+            User user = new User(FirebaseAuth.getInstance().getCurrentUser().getUid(),token);
+            databaseReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user);
+        }
+
+        DatabaseReference profileReference = FirebaseDatabase.getInstance().getReference(USER_PROFILES_REFERENCE);
+        if(FirebaseAuth.getInstance().getCurrentUser()!= null){
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            UserProfile userProfile = new UserProfile();
+            userProfile.setEmail(user.getEmail());
+            userProfile.setName(user.getDisplayName());
+            profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(userProfile);
+        }
+    }
+
 }
