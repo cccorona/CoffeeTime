@@ -3,6 +3,7 @@ package mx.com.cesarcorona.coffeetime.activities;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
@@ -13,12 +14,21 @@ import android.widget.ImageView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
 import mx.com.cesarcorona.coffeetime.MainActivity;
 import mx.com.cesarcorona.coffeetime.R;
+import mx.com.cesarcorona.coffeetime.pojo.User;
+
+import static mx.com.cesarcorona.coffeetime.services.MyFirebaseInstanceIDService.KEY_TOKEN;
+import static mx.com.cesarcorona.coffeetime.services.MyFirebaseInstanceIDService.PREFERENCES_KEY;
+import static mx.com.cesarcorona.coffeetime.services.MyFirebaseInstanceIDService.USERS_REFERENCE;
 
 public class CoffeTimeActiviy extends AppCompatActivity implements DatePickerDialog.OnDateSetListener ,
         TimePickerDialog.OnTimeSetListener{
@@ -38,6 +48,14 @@ public class CoffeTimeActiviy extends AppCompatActivity implements DatePickerDia
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(USERS_REFERENCE);
+        if(FirebaseAuth.getInstance().getCurrentUser()!= null){
+            SharedPreferences sharedPreferences = getSharedPreferences(PREFERENCES_KEY,MODE_PRIVATE);
+            String token = sharedPreferences.getString(KEY_TOKEN,"");
+            User user = new User(FirebaseAuth.getInstance().getCurrentUser().getUid(),token);
+            databaseReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user);
+        }
         setContentView(R.layout.activity_coffe_time_activiy);
         myCalendar = Calendar.getInstance(Locale.getDefault());
         dateEditText= (EditText) findViewById(R.id.date_text);
