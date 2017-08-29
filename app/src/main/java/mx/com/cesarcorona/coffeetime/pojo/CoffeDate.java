@@ -13,13 +13,20 @@ public class CoffeDate implements Serializable {
     private int requestedPlaces;
     private String user1;
     private String user2;
+    private double latitud;
+    private double longitud;
+    private String favoritePlace;
 
-    public CoffeDate(String time, String placeId, int requestedPlaces, String user1, String user2) {
+
+    public CoffeDate(String time, String placeId, String user1, double latitud, double longitud) {
         this.time = time;
         this.placeId = placeId;
-        this.requestedPlaces = requestedPlaces;
         this.user1 = user1;
-        this.user2 = user2;
+        this.latitud = latitud;
+        this.longitud = longitud;
+    }
+
+    public CoffeDate() {
     }
 
     public String getTime() {
@@ -60,5 +67,29 @@ public class CoffeDate implements Serializable {
 
     public void setUser2(String user2) {
         this.user2 = user2;
+    }
+
+    public double getLatitud() {
+        return latitud;
+    }
+
+    public void setLatitud(double latitud) {
+        this.latitud = latitud;
+    }
+
+    public double getLongitud() {
+        return longitud;
+    }
+
+    public void setLongitud(double longitud) {
+        this.longitud = longitud;
+    }
+
+    public String getFavoritePlace() {
+        return favoritePlace;
+    }
+
+    public void setFavoritePlace(String favoritePlace) {
+        this.favoritePlace = favoritePlace;
     }
 }

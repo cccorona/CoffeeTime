@@ -48,6 +48,7 @@ public class SearchActivity extends AppCompatActivity {
     private String DATA_BASE_PATH;
     private ProgressDialog pDialog;
     private LinkedList<CoffeDate> availableDates;
+    private String keyDate;
 
 
 
@@ -58,11 +59,11 @@ public class SearchActivity extends AppCompatActivity {
         Gson gson = new Gson();
         showpDialog();
         availableDates = new LinkedList<>();
-        dateSelected = getIntent().getExtras().getString(KEY_DATE);
-        timeSelected = getIntent().getExtras().getString(KEY_TIME);
-        placeSeleccionado = gson.fromJson(getIntent().getExtras().getString(KEY_PLACE_SELECTED),noman.googleplaces.Place.class);
-        categoriaSeleccionada = (Categoria) getIntent().getExtras().getSerializable(KEY_CATEGORIA);
-        topicSeleccionado = (Topic)getIntent().getExtras().getSerializable(KEY_TOPIC);
+        dateSelected = getIntent().getExtras().getString(KEY_DATE);//ya
+        timeSelected = getIntent().getExtras().getString(KEY_TIME);//ya
+        placeSeleccionado = gson.fromJson(getIntent().getExtras().getString(KEY_PLACE_SELECTED),noman.googleplaces.Place.class);//ya
+        categoriaSeleccionada = (Categoria) getIntent().getExtras().getSerializable(KEY_CATEGORIA);//ya
+        topicSeleccionado = (Topic)getIntent().getExtras().getSerializable(KEY_TOPIC);//ya
         ubicacionPreferida = gson.fromJson(getIntent().getExtras().getString(KEY_PLACE_SELECTED),Place.class);
         latitud = getIntent().getExtras().getDouble(KEY_CURRENT_LATIDU);
         longitud = getIntent().getExtras().getDouble(KEY_CURRENT_LONGITUD);
@@ -75,10 +76,18 @@ public class SearchActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapShot: dataSnapshot.getChildren()){
                     CoffeDate date = snapShot.getValue(CoffeDate.class);
-                    availableDates.add(date);
+                    if(date.getTime().equalsIgnoreCase(timeSelected)){
+                        if(placeSeleccionado.getPlaceId().equalsIgnoreCase(date.getPlaceId())){
+                            availableDates.add(date);
+                        }
+                    }
                 }
 
-                updateUI();
+                if(availableDates != null && availableDates.size()>0){
+                    updateUI();
+                }else{
+                    presentCoffeDate();
+                }
             }
 
 
@@ -97,6 +106,21 @@ public class SearchActivity extends AppCompatActivity {
 
     private void updateUI(){
 
+    }
+
+    private void presentCoffeDate(){
+        CoffeDate date = new CoffeDate();
+        date.setLatitud(latitud);
+        date.setLongitud(longitud);
+        if(placeSeleccionado != null){
+            date.setPlaceId(placeSeleccionado.getPlaceId());
+        }
+        date.setRequestedPlaces(partyNumber);
+        if(ubicacionPreferida != null){
+            date.setFavoritePlace(ubicacionPreferida.getId());
+        }
+
+        keyDate = databaseReference.push().getKey();
     }
 
     private String buildDataBasePath(){
