@@ -34,11 +34,11 @@ import static mx.com.cesarcorona.coffeetime.activities.FilterActivity.KEY_PLACE_
 import static mx.com.cesarcorona.coffeetime.activities.FilterTopicsActivity.KEY_PARTY_NUMBER;
 import static mx.com.cesarcorona.coffeetime.activities.FilterTopicsActivity.KEY_TOPIC;
 
-public class SearchActivity extends AppCompatActivity implements CoffeDate.FillInformationInterface , CoffeDateAdapter.MatchingInterface {
+public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.FillInformationInterface , CoffeDateAdapter.MatchingInterface {
 
 
     public static String TAG = SearchActivity.class.getSimpleName();
-    public static String DATES_REFERENCE = "dates";
+    public static String DATES_REFERENCE = "dates/";
 
 
     private DatabaseReference databaseReference;
@@ -69,6 +69,9 @@ public class SearchActivity extends AppCompatActivity implements CoffeDate.FillI
         setContentView(R.layout.activity_search);
         matchingList = (ListView) findViewById(R.id.matching_dates_list);
         searchingPanel = (LinearLayout) findViewById(R.id.loading_page);
+        pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Por favor espera...");
+        pDialog.setCancelable(false);
 
         Gson gson = new Gson();
         showpDialog();
@@ -137,14 +140,14 @@ public class SearchActivity extends AppCompatActivity implements CoffeDate.FillI
             date.setFavoritePlace(ubicacionPreferida.getId());
         }
 
-        keyDate = databaseReference.push().getKey();
+        databaseReference.push().setValue(date);
         hidepDialog();
         //Show meessga no match
     }
 
     private String buildDataBasePath(){
 
-        StringBuilder pathBuilder = new StringBuilder();
+        StringBuilder pathBuilder = new StringBuilder(DATES_REFERENCE);
         pathBuilder.append(categoriaSeleccionada.getDataBaseReference()).append("/");
         pathBuilder.append(topicSeleccionado.getDataBaseReference()).append("/");
         pathBuilder.append(dateSelected);
@@ -198,7 +201,7 @@ public class SearchActivity extends AppCompatActivity implements CoffeDate.FillI
     @Override
     public void OnConnectButton(CoffeDate coffeDate) {
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(DATES_REFERENCE +"/"+coffeDate.getDataBaseReference());
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(DATES_REFERENCE+coffeDate.getDataBaseReference());
         databaseReference.child("user2").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override

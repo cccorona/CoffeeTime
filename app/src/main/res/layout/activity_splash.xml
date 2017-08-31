@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/linear_splash_gradient"
     android:orientation="vertical"
     android:id="@+id/root_view"
@@ -15,6 +16,7 @@
         android:layout_height="wrap_content">
 
         <TextView
+            style="@style/TextViewComicSans"
             android:layout_marginTop="50dp"
             android:id="@+id/fullscreen_content"
             android:layout_width="match_parent"
@@ -26,12 +28,27 @@
             android:textColor="#FFF"
             android:textSize="50sp"
             android:textStyle="bold" />
+        <TextView
+            style="@style/TextViewComicSans"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:keepScreenOn="true"
+            android:text="@string/splash_sub"
+            android:textColor="#FFF"
+            android:textSize="18sp"
+            android:padding="5dp"
+            android:textStyle="bold" />
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:background="#FFF"
             android:layout_gravity="center"
             android:id="@+id/coffe_loggo_button"
             android:layout_width="300dp"
             android:layout_height="300dp"
+            app:civ_border_width="2dp"
+            app:civ_border_color="#FF000000"
             android:src="@drawable/coffe_logo" />
 
     </LinearLayout>

@@ -7,6 +7,43 @@
     android:orientation="vertical"
     tools:context="mx.com.cesarcorona.coffeetime.activities.CoffeTimeActiviy">
 
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <android.support.v7.widget.Toolbar
+                style="@style/MyToolbarStyle"
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                />
+
+            <TextView
+                android:visibility="gone"
+                android:layout_marginLeft="10dp"
+                android:padding="10dp"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#222222"
+                android:text="Choose an option:"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize" />
+
+
+
+        </RelativeLayout>
+
+
+
+
+    </android.support.design.widget.AppBarLayout>
+
+
 
     <android.support.v7.widget.CardView
         xmlns:card_view="http://schemas.android.com/apk/res-auto"

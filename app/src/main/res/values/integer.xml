@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="slide_animation_duration">400</integer>
+    <item name="grid_rows" type="integer">2</item>
+
+
+</resources>

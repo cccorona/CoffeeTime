@@ -42,7 +42,7 @@ import static mx.com.cesarcorona.coffeetime.activities.FilterActivity.KEY_CURREN
 import static mx.com.cesarcorona.coffeetime.activities.FilterActivity.KEY_FAVORITE_PLACE;
 import static mx.com.cesarcorona.coffeetime.activities.FilterActivity.KEY_PLACE_SELECTED;
 
-public class FilterTopicsActivity extends AppCompatActivity {
+public class FilterTopicsActivity extends BaseAnimatedActivity {
 
 
 

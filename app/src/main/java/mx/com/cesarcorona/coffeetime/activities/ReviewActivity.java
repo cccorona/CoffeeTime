@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import mx.com.cesarcorona.coffeetime.R;
 
-public class ReviewActivity extends AppCompatActivity {
+public class ReviewActivity extends BaseAnimatedActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

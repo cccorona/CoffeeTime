@@ -65,7 +65,7 @@ import noman.googleplaces.PlacesListener;
 import static mx.com.cesarcorona.coffeetime.activities.CoffeTimeActiviy.KEY_DATE;
 import static mx.com.cesarcorona.coffeetime.activities.CoffeTimeActiviy.KEY_TIME;
 
-public class FilterActivity extends AppCompatActivity implements OnMapReadyCallback ,CategoryAdapter.CategorySelectedListener, GoogleApiClient.OnConnectionFailedListener , PlacesListener{
+public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCallback ,CategoryAdapter.CategorySelectedListener, GoogleApiClient.OnConnectionFailedListener , PlacesListener{
 
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 100;
@@ -234,6 +234,8 @@ public class FilterActivity extends AppCompatActivity implements OnMapReadyCallb
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                hidepDialog();
+
 
             }
         });

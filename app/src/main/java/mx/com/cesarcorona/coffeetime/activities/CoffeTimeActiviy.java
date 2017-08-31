@@ -32,7 +32,7 @@ import static mx.com.cesarcorona.coffeetime.services.MyFirebaseInstanceIDService
 import static mx.com.cesarcorona.coffeetime.services.MyFirebaseInstanceIDService.PREFERENCES_KEY;
 import static mx.com.cesarcorona.coffeetime.services.MyFirebaseInstanceIDService.USERS_REFERENCE;
 
-public class CoffeTimeActiviy extends AppCompatActivity implements DatePickerDialog.OnDateSetListener ,
+public class CoffeTimeActiviy extends BaseAnimatedActivity implements DatePickerDialog.OnDateSetListener ,
         TimePickerDialog.OnTimeSetListener{
 
 

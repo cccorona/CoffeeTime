@@ -61,11 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_gravity="center"
-        android:layout_margin="20dp"
-        android:layout_weight="1"
-        app:cardCornerRadius="4dp"
-        app:cardElevation="15dp"
-        app:cardMaxElevation="20dp">
+        android:layout_weight="1">
 
 
         <LinearLayout
@@ -74,16 +70,30 @@
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+            <RelativeLayout
                 android:layout_marginTop="20dp"
-                android:src="@drawable/coffe_logo"
-                app:civ_border_color="#FF000000"
-                app:civ_border_width="2dp" />
+                android:layout_width="150dp"
+                android:layout_height="150dp">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@android:color/transparent"
+                    app:civ_border_color="#FF000000"
+                    app:civ_border_width="4dp" />
+
+                <ImageView
+                    android:src="@drawable/coffe_logo"
+                    android:layout_centerInParent="true"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
+
+
+
+            </RelativeLayout>
+
 
             <TextView
+                style="@style/TextViewComicSans"
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -92,7 +102,7 @@
                 android:keepScreenOn="true"
                 android:text="@string/cafe"
                 android:textAllCaps="true"
-                android:textColor="#77e5f5"
+                android:textColor="#000"
                 android:textSize="22sp"
                 android:textStyle="bold" />
 
@@ -107,12 +117,8 @@
         android:id="@+id/card_view_merienda"
         android:layout_gravity="center"
         android:layout_width="match_parent"
-        android:layout_margin="20dp"
         android:layout_weight="1"
-        card_view:cardMaxElevation="20dp"
-        android:layout_height="0dp"
-        card_view:cardElevation="15dp"
-        card_view:cardCornerRadius="4dp">
+        android:layout_height="0dp">
 
 
         <LinearLayout
@@ -121,18 +127,34 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
-            <de.hdodenhof.circleimageview.CircleImageView
+            <RelativeLayout
                 android:layout_marginTop="20dp"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/fork_image"
                 android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:src="@drawable/fork"
-                app:civ_border_width="2dp"
-                app:civ_border_color="#FF000000"/>
+                android:layout_height="150dp">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/fork_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@android:color/transparent"
+                    app:civ_border_width="4dp"
+                    app:civ_border_color="#FF000000"/>
+
+                <ImageView
+                    android:src="@drawable/fork"
+                    android:layout_centerInParent="true"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
+
+
+
+            </RelativeLayout>
+
+
+
 
             <TextView
+                style="@style/TextViewComicSans"
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -140,7 +162,7 @@
                 android:keepScreenOn="true"
                 android:textAllCaps="true"
                 android:text="@string/merienda"
-                android:textColor="#77e5f5"
+                android:textColor="#000"
                 android:textSize="22sp"
                 android:textStyle="bold" />
 

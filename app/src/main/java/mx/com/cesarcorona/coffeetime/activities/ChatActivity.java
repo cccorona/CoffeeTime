@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import mx.com.cesarcorona.coffeetime.R;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends BaseAnimatedActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

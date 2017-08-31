@@ -23,6 +23,7 @@ public class CoffeDate implements Serializable {
     private double latitud;
     private double longitud;
     private String favoritePlace;
+    private Boolean openDate;
 
 
 
@@ -50,6 +51,7 @@ public class CoffeDate implements Serializable {
         this.user1 = user1;
         this.latitud = latitud;
         this.longitud = longitud;
+        this.openDate = true;
     }
 
     public CoffeDate() {
@@ -168,5 +170,13 @@ public class CoffeDate implements Serializable {
 
     public void setDataBaseReference(String dataBaseReference) {
         this.dataBaseReference = dataBaseReference;
+    }
+
+    public Boolean getOpenDate() {
+        return openDate;
+    }
+
+    public void setOpenDate(Boolean openDate) {
+        this.openDate = openDate;
     }
 }
