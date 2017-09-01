@@ -34,6 +34,7 @@ import static mx.com.cesarcorona.coffeetime.activities.FilterActivity.KEY_CURREN
 import static mx.com.cesarcorona.coffeetime.activities.FilterActivity.KEY_PLACE_SELECTED;
 import static mx.com.cesarcorona.coffeetime.activities.FilterTopicsActivity.KEY_PARTY_NUMBER;
 import static mx.com.cesarcorona.coffeetime.activities.FilterTopicsActivity.KEY_TOPIC;
+import static mx.com.cesarcorona.coffeetime.activities.JustCoffeActivity.KEY_JUST_COFFE;
 
 public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.FillInformationInterface , CoffeDateAdapter.MatchingInterface {
 
@@ -61,6 +62,7 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
     private CoffeDateAdapter coffeDateAdapter;
     private LinearLayout searchingPanel;
     private ListView matchingList ;
+    private boolean justCoffe;
 
 
 
@@ -86,12 +88,14 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
         dateSelected = getIntent().getExtras().getString(KEY_DATE);//ya
         timeSelected = getIntent().getExtras().getString(KEY_TIME);//ya
         placeSeleccionado = gson.fromJson(getIntent().getExtras().getString(KEY_PLACE_SELECTED),noman.googleplaces.Place.class);//ya
-        categoriaSeleccionada = (Categoria) getIntent().getExtras().getSerializable(KEY_CATEGORIA);//ya
+        //categoriaSeleccionada = (Categoria) getIntent().getExtras().getSerializable(KEY_CATEGORIA);//ya
         topicSeleccionado = (Topic)getIntent().getExtras().getSerializable(KEY_TOPIC);//ya
-        ubicacionPreferida = gson.fromJson(getIntent().getExtras().getString(KEY_PLACE_SELECTED),Place.class);
+        //ubicacionPreferida = gson.fromJson(getIntent().getExtras().getString(KEY_PLACE_SELECTED),Place.class);
         latitud = getIntent().getExtras().getDouble(KEY_CURRENT_LATIDU);
         longitud = getIntent().getExtras().getDouble(KEY_CURRENT_LONGITUD);
         partyNumber = getIntent().getExtras().getInt(KEY_PARTY_NUMBER);
+        justCoffe = getIntent().getExtras().getBoolean(KEY_JUST_COFFE);
+
 
         DATA_BASE_PATH = buildDataBasePath();
         databaseReference = FirebaseDatabase.getInstance().getReference(DATA_BASE_PATH);
@@ -101,12 +105,8 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
                 for(DataSnapshot snapShot: dataSnapshot.getChildren()){
                     CoffeDate date = snapShot.getValue(CoffeDate.class);
                     date.setDataBaseReference(snapShot.getKey());
-                    if(date.getTime().equalsIgnoreCase(timeSelected)){
-                        if(placeSeleccionado.getPlaceId().equalsIgnoreCase(date.getPlaceId())){
-                            if(date.getUser2().equalsIgnoreCase("") || date.getUser2() == null){
-                                availableDates.add(date);
-                            }
-                        }
+                    if(date.getOpenDate()){
+                        availableDates.add(date);
                     }
                 }
 
@@ -134,17 +134,9 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
 
     private void presentCoffeDate(){
         CoffeDate date = new CoffeDate();
-        date.setLatitud(latitud);
-        date.setLongitud(longitud);
+        date.setOpenDate(true);
         date.setUser1(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        if(placeSeleccionado != null){
-            date.setPlaceId(placeSeleccionado.getPlaceId());
-        }
         date.setRequestedPlaces(partyNumber);
-        if(ubicacionPreferida != null){
-            date.setFavoritePlace(ubicacionPreferida.getId());
-        }
-
         databaseReference.push().setValue(date);
         hidepDialog();
         //Show meessga no match
@@ -153,9 +145,11 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
     private String buildDataBasePath(){
 
         StringBuilder pathBuilder = new StringBuilder(DATES_REFERENCE);
-        pathBuilder.append(categoriaSeleccionada.getDataBaseReference()).append("/");
+        //pathBuilder.append(categoriaSeleccionada.getDataBaseReference()).append("/");
         pathBuilder.append(topicSeleccionado.getDataBaseReference()).append("/");
-        pathBuilder.append(dateSelected);
+        pathBuilder.append(placeSeleccionado.getPlaceId()).append("/");
+        pathBuilder.append(dateSelected).append("/");
+        pathBuilder.append((timeSelected));
         return  pathBuilder.toString();
 
 

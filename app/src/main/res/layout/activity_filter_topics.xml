@@ -123,7 +123,7 @@
     <LinearLayout
         android:gravity="center"
         android:layout_gravity="center"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         
         <TextView
@@ -134,10 +134,7 @@
             android:padding="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+
 
 
             <Button
@@ -154,9 +151,6 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp" />
 
-
-        </LinearLayout>
-        
         
     </LinearLayout>
 

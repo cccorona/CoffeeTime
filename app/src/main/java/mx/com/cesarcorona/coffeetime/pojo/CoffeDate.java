@@ -45,12 +45,10 @@ public class CoffeDate implements Serializable {
     }
 
 
-    public CoffeDate(String time, String placeId, String user1, double latitud, double longitud) {
+    public CoffeDate(String time, String placeId, String user1) {
         this.time = time;
         this.placeId = placeId;
         this.user1 = user1;
-        this.latitud = latitud;
-        this.longitud = longitud;
         this.openDate = true;
     }
 

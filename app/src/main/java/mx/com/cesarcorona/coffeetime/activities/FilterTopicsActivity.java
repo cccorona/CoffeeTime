@@ -211,7 +211,7 @@ public class FilterTopicsActivity extends BaseAnimatedActivity {
         timeSelected = getIntent().getExtras().getString(KEY_TIME);
         placeSeleccionado = gson.fromJson(getIntent().getExtras().getString(KEY_PLACE_SELECTED),noman.googleplaces.Place.class);
         categoriaSeleccionada = (Categoria) getIntent().getExtras().getSerializable(KEY_CATEGORIA);
-        ubicacionPreferida = gson.fromJson(getIntent().getExtras().getString(KEY_PLACE_SELECTED),Place.class);
+       // ubicacionPreferida = gson.fromJson(getIntent().getExtras().getString(KEY_PLACE_SELECTED),Place.class);
         latitud = getIntent().getExtras().getDouble(KEY_CURRENT_LATIDU);
         longitud = getIntent().getExtras().getDouble(KEY_CURRENT_LONGITUD);
 

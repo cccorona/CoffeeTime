@@ -18,9 +18,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -57,6 +60,7 @@ import java.util.Locale;
 import mx.com.cesarcorona.coffeetime.MainActivity;
 import mx.com.cesarcorona.coffeetime.R;
 import mx.com.cesarcorona.coffeetime.adapter.CategoryAdapter;
+import mx.com.cesarcorona.coffeetime.fragment.WorkaroundMapFragment;
 import mx.com.cesarcorona.coffeetime.pojo.Categoria;
 import mx.com.cesarcorona.coffeetime.pojo.Topic;
 import noman.googleplaces.NRPlaces;
@@ -75,6 +79,8 @@ public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCa
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 100;
     private static final int MAX_ZOOM = 16;
     private static final String CATEGORIAS_REFERENCE = "categorias";
+    public static final String KEY_PARTY_NUMBER = "party";
+
 
     public static String KEY_CATEGORIA="categoria";
     public static String KEY_FAVORITE_PLACE="place";
@@ -90,7 +96,7 @@ public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCa
 
 
     private FusedLocationProviderClient mFusedLocationClient;
-    private MapFragment mapFragment;
+    private WorkaroundMapFragment mapFragment;
     private Location currentLocation;
     private GoogleMap currentMap;
     private GoogleApiClient mGoogleApiClient;
@@ -113,6 +119,12 @@ public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCa
 
     private boolean justCoffe;
 
+    private Button plusButton, minusButton;
+    private TextView partyNumber;
+    private int number = 1;
+    private ScrollView myScroolView;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +134,7 @@ public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCa
         buscarText = (EditText) findViewById(R.id.buscar_text);
         searchButton = (ImageView) findViewById(R.id.search_button);
         centerButton = (ImageView)findViewById(R.id.center_button);
+        myScroolView = (ScrollView)findViewById(R.id.myScroolView);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -174,12 +187,18 @@ public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCa
                      extras.putDouble(KEY_CURRENT_LONGITUD,longitud);
                      if(placeSeleccionado == null){
                          extras.putString(KEY_PLACE_SELECTED,"");
+                         Toast.makeText(FilterActivity.this,getString(R.string.place_Selected),Toast.LENGTH_LONG).show();
+                         return;
+
 
                      }else{
                          extras.putString(KEY_PLACE_SELECTED,gson.toJson(placeSeleccionado));
 
                      }
-                     Intent filterIntent = new Intent(FilterActivity.this,FilterTopicsActivity.class);
+                     extras.putBoolean(KEY_JUST_COFFE,justCoffe);
+                     extras.putInt(KEY_PARTY_NUMBER,number);
+
+                     Intent filterIntent = new Intent(FilterActivity.this,SearchActivity.class);
                      filterIntent.putExtras(extras);
                      startActivity(filterIntent);
                      finish();
@@ -188,9 +207,16 @@ public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCa
             }
         });
 
-        mapFragment = (MapFragment) getFragmentManager()
+        mapFragment = (WorkaroundMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        mapFragment.setListener(new WorkaroundMapFragment.OnTouchListener() {
+            @Override
+            public void onTouch() {
+               myScroolView.requestDisallowInterceptTouchEvent(true);
+
+            }
+        });
 
         if (ContextCompat.checkSelfPermission(FilterActivity.this,
                 Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -326,6 +352,29 @@ public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCa
             @Override
             public void onClick(View v) {
                 centerMapOnCurrentLocation();
+            }
+        });
+
+        plusButton =(Button) findViewById(R.id.plus_button);
+        minusButton =(Button) findViewById(R.id.minus_button);
+        partyNumber = (TextView)findViewById(R.id.agetext);
+        plusButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(number < 2){
+                    partyNumber.setText(""+ ++number);
+
+                }
+            }
+        });
+
+        minusButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(number>1){
+                    number--;
+                    partyNumber.setText(""+number);
+                }
             }
         });
 
