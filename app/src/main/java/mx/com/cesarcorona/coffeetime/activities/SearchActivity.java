@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -72,6 +73,10 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
         pDialog = new ProgressDialog(this);
         pDialog.setMessage("Por favor espera...");
         pDialog.setCancelable(false);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
 
         Gson gson = new Gson();
         showpDialog();

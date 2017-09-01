@@ -26,14 +26,16 @@
                 />
 
             <TextView
-                android:visibility="gone"
+                style="@style/TextViewComicSans"
+                android:layout_centerInParent="true"
+                android:visibility="visible"
                 android:layout_marginLeft="10dp"
                 android:padding="10dp"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="#222222"
-                android:text="Choose an option:"
-                android:layout_width="match_parent"
+                android:textColor="#FFF"
+                android:text="@string/app_name"
+                android:layout_width="wrap_content"
                 android:layout_height="?attr/actionBarSize" />
 
 
@@ -49,6 +51,7 @@
 
 
         <LinearLayout
+            android:visibility="gone"
             android:layout_marginTop="20dp"
             android:background="@drawable/speech"
             android:layout_gravity="center_vertical"
@@ -79,6 +82,7 @@
 
 
     <RelativeLayout
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -172,6 +176,15 @@
             android:id="@+id/map"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
+
+
+        <ImageView
+            android:id="@+id/center_button"
+            android:src="@drawable/center_icon"
+            android:layout_margin="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
 
 
         <RelativeLayout

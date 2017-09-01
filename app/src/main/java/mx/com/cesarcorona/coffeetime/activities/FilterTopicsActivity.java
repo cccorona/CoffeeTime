@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -91,6 +92,10 @@ public class FilterTopicsActivity extends BaseAnimatedActivity {
         minusButton =(Button) findViewById(R.id.minus_button);
         partyNumber = (TextView)findViewById(R.id.agetext);
         databaseReference = FirebaseDatabase.getInstance().getReference(TOPICS_REFERENCE);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
 
 
 

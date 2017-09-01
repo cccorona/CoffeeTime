@@ -24,14 +24,16 @@
                 />
 
             <TextView
-                android:visibility="gone"
+                style="@style/TextViewComicSans"
+                android:layout_centerInParent="true"
+                android:visibility="visible"
                 android:layout_marginLeft="10dp"
                 android:padding="10dp"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="#222222"
-                android:text="Choose an option:"
-                android:layout_width="match_parent"
+                android:textColor="#FFF"
+                android:text="@string/app_name"
+                android:layout_width="wrap_content"
                 android:layout_height="?attr/actionBarSize" />
 
 

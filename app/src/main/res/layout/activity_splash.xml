@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/linear_splash_gradient"
+    android:background="@color/colorPrimary"
     android:orientation="vertical"
     android:id="@+id/root_view"
     tools:context="mx.com.cesarcorona.coffeetime.activities.SplashActivity">
@@ -41,15 +41,33 @@
             android:padding="5dp"
             android:textStyle="bold" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:background="#FFF"
+
+        <RelativeLayout
             android:layout_gravity="center"
-            android:id="@+id/coffe_loggo_button"
             android:layout_width="300dp"
             android:layout_height="300dp"
-            app:civ_border_width="2dp"
-            app:civ_border_color="#FF000000"
-            android:src="@drawable/coffe_logo" />
+            >
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_gravity="center"
+                android:layout_height="match_parent"
+                android:background="@drawable/white_circle"
+                android:layout_width="match_parent"
+                android:id="@+id/coffe_loggo_button"
+                app:civ_border_width="6dp"
+                android:src="@android:color/transparent"
+                app:civ_border_color="#FF000000"/>
+
+            <ImageView
+                android:src="@drawable/coffe_logo"
+                android:layout_centerInParent="true"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                />
+
+        </RelativeLayout>
+
+
 
     </LinearLayout>
 

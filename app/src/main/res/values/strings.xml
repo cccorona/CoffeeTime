@@ -19,6 +19,7 @@
     <string name="merienda">Meals</string>
     <string name="title_activity_coffe_time_activiy">CoffeTimeActiviy</string>
     <string name="current_position">You are here</string>
+    <string name="favorite_place">Favourite place</string>
     <string name="set_your_coffee_time">Set your coffee time</string>
     <string name="when">When?</string>
     <string name="time">Time?</string>
@@ -29,6 +30,7 @@
     <string name="what_topic_do_you_prefer">what topic do you prefer?</string>
     <string name="search">Searching</string>
     <string name="splash_sub">its all About meeting new friends</string>
+    <string name="topic">Topic?</string>
 
 </resources>
 

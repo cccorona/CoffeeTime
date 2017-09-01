@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -51,6 +52,7 @@ import com.google.gson.Gson;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import mx.com.cesarcorona.coffeetime.MainActivity;
 import mx.com.cesarcorona.coffeetime.R;
@@ -64,6 +66,8 @@ import noman.googleplaces.PlacesListener;
 
 import static mx.com.cesarcorona.coffeetime.activities.CoffeTimeActiviy.KEY_DATE;
 import static mx.com.cesarcorona.coffeetime.activities.CoffeTimeActiviy.KEY_TIME;
+import static mx.com.cesarcorona.coffeetime.activities.JustCoffeActivity.KEY_JUST_COFFE;
+import static mx.com.cesarcorona.coffeetime.activities.JustCoffeActivity.KEY_TOPIC;
 
 public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCallback ,CategoryAdapter.CategorySelectedListener, GoogleApiClient.OnConnectionFailedListener , PlacesListener{
 
@@ -77,6 +81,8 @@ public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCa
     public static String KEY_CURRENT_LATIDU="latitud";
     public static String KEY_CURRENT_LONGITUD="longitud";
     public static String KEY_PLACE_SELECTED="placeselected";
+    public static final String KEY_TOPIC="topic";
+
 
 
 
@@ -97,10 +103,15 @@ public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCa
     private SupportPlaceAutocompleteFragment autocompleteFragment;
     private Place ubicacionPreferida;
     private EditText buscarText;
-    private ImageView homeButton, nextButtton, searchButton;
+    private ImageView homeButton, nextButtton, searchButton,centerButton;
     private double latitud, longitud;
     private noman.googleplaces.Place placeSeleccionado;
     private List<noman.googleplaces.Place> placesFound;
+    private List<noman.googleplaces.Place> historicPlaces;
+    private Topic topicSeleccionado;
+
+
+    private boolean justCoffe;
 
 
     @Override
@@ -110,6 +121,7 @@ public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCa
         categoriasSelector = (Spinner) findViewById(R.id.categorySpinner);
         buscarText = (EditText) findViewById(R.id.buscar_text);
         searchButton = (ImageView) findViewById(R.id.search_button);
+        centerButton = (ImageView)findViewById(R.id.center_button);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,7 +133,9 @@ public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCa
         pDialog.setMessage("Por favor espera...");
         pDialog.setCancelable(false);
         allcategorias = new LinkedList<>();
+        historicPlaces = new LinkedList<>();
         showpDialog();
+        justCoffe = false ;
         databaseReference = FirebaseDatabase.getInstance().getReference(CATEGORIAS_REFERENCE);
         homeButton = (ImageView) findViewById(R.id.home_icon);
         nextButtton = (ImageView) findViewById(R.id.next_icon);
@@ -137,14 +151,18 @@ public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCa
         nextButtton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 if(categoriaSeleccionada == null){
+                 if(categoriaSeleccionada == null && !justCoffe){
                      Toast.makeText(FilterActivity.this,getString(R.string.selected_category),Toast.LENGTH_LONG).show();
                  }else{
                      Gson gson = new Gson();
                      Bundle extras = new Bundle();
                      extras.putString(KEY_DATE,dateSelected);
                      extras.putString(KEY_TIME,timeSelected);
-                     extras.putSerializable(KEY_CATEGORIA,categoriaSeleccionada);
+                     extras.putSerializable(KEY_TOPIC,topicSeleccionado);
+                     if(justCoffe){
+                         extras.putSerializable(KEY_CATEGORIA,categoriaSeleccionada);
+
+                     }
                      if(ubicacionPreferida == null){
                          extras.putString(KEY_FAVORITE_PLACE,"");
 
@@ -199,46 +217,49 @@ public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCa
                         public void onSuccess(Location location) {
                             if (location != null) {
                                 currentLocation = location;
-                                centerLocationOnScreen();
+                                centerLocationOnScreenFirstTime();
                             }
                         }
                     });
         }
+        justCoffe = getIntent().getExtras().getBoolean(KEY_JUST_COFFE);
 
+        if(!justCoffe){
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot categoriaSnap : dataSnapshot.getChildren()) {
+                        Categoria categoria = categoriaSnap.getValue(Categoria.class);
+                        categoria.setDataBaseReference(categoriaSnap.getKey());
+                        allcategorias.add(categoria);
+                    }
 
-                for (DataSnapshot categoriaSnap : dataSnapshot.getChildren()) {
-                    Categoria categoria = categoriaSnap.getValue(Categoria.class);
-                    categoria.setDataBaseReference(categoriaSnap.getKey());
-                    allcategorias.add(categoria);
+                    LinkedList<String> list = new LinkedList<String>();
+                    for(Categoria topic:allcategorias){
+                        list.add(topic.getDisplay_title());
+                    }
+                    ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(FilterActivity.this,
+                            android.R.layout.simple_spinner_item, list);
+                    dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    categoriasSelector.setAdapter(dataAdapter);
+
+                    categoryAdapter = new CategoryAdapter(allcategorias, FilterActivity.this);
+                    //categoryAdapter.setCategorySelectedListener(FilterActivity.this);
+                    //categoriasSelector.setAdapter(categoryAdapter);
+                    hidepDialog();
+
                 }
 
-                LinkedList<String> list = new LinkedList<String>();
-                for(Categoria topic:allcategorias){
-                    list.add(topic.getDisplay_title());
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // hidepDialog();
+
+
                 }
-                ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(FilterActivity.this,
-                        android.R.layout.simple_spinner_item, list);
-                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                categoriasSelector.setAdapter(dataAdapter);
+            });
+        }
 
-                categoryAdapter = new CategoryAdapter(allcategorias, FilterActivity.this);
-                //categoryAdapter.setCategorySelectedListener(FilterActivity.this);
-                //categoriasSelector.setAdapter(categoryAdapter);
-                hidepDialog();
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                hidepDialog();
-
-
-            }
-        });
 
 
         categoriasSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -271,7 +292,8 @@ public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCa
                 ubicacionPreferida = place;
                 latitud = ubicacionPreferida.getLatLng().latitude;
                 longitud = ubicacionPreferida.getLatLng().longitude;
-                centerLocationOnScreen();
+                showpDialog();
+                centerLocationOnSelectedPlaceAndSearch();
 
             }
 
@@ -291,6 +313,23 @@ public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCa
 
         dateSelected = getIntent().getExtras().getString(KEY_DATE);
         timeSelected = getIntent().getExtras().getString(KEY_TIME);
+        topicSeleccionado = (Topic)getIntent().getExtras().getSerializable(FilterTopicsActivity.KEY_TOPIC);
+
+
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
+
+
+        centerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                centerMapOnCurrentLocation();
+            }
+        });
+
+
 
     }
 
@@ -311,7 +350,7 @@ public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCa
                                 public void onSuccess(Location location) {
                                     if (location != null) {
                                         currentLocation = location;
-                                        centerLocationOnScreen();
+                                        centerLocationOnScreenFirstTime();
                                     }
                                 }
                             });
@@ -335,7 +374,7 @@ public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCa
             @Override
             public boolean onMarkerClick(Marker marker) {
 
-                for(noman.googleplaces.Place plafes:placesFound){
+                for(noman.googleplaces.Place plafes:historicPlaces){
                     if(plafes.getLatitude() == marker.getPosition().latitude ){
                         if(plafes.getLongitude() == marker.getPosition().longitude){
                             placeSeleccionado = plafes;
@@ -351,13 +390,50 @@ public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCa
     }
 
     private void centerLocationOnScreen(){
+        currentMap.clear();
+        currentMap.addMarker(new MarkerOptions()
+                .position(new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude()))
+                .title(getString(R.string.current_position))).showInfoWindow();
+        currentMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude()),MAX_ZOOM));
+        //latitud = currentLocation.getLatitude();
+        //longitud = currentLocation.getLongitude();
+
+    }
+
+
+    private void centerLocationOnSelectedPlaceAndSearch(){
+        currentMap.clear();
+        historicPlaces = new LinkedList<>();
+        currentMap.addMarker(new MarkerOptions()
+                .position(new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude()))
+                .title(getString(R.string.favorite_place))).showInfoWindow();
+        currentMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitud,longitud),MAX_ZOOM));
+        //latitud = currentLocation.getLatitude();
+        //longitud = currentLocation.getLongitude();
+        if(justCoffe){
+            justCoffeSEarch();
+        }
+    }
+
+
+
+    private void centerLocationOnScreenFirstTime(){
         currentMap.addMarker(new MarkerOptions()
                 .position(new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude()))
                 .title(getString(R.string.current_position))).showInfoWindow();
         currentMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude()),MAX_ZOOM));
         latitud = currentLocation.getLatitude();
         longitud = currentLocation.getLongitude();
+        if(justCoffe){
+            justCoffeSEarch();
+        }
+
+
     }
+
+
+
+
 
 
     private void showpDialog() {
@@ -371,6 +447,7 @@ public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCa
     }
 
     private void searchPlaces() {
+        Locale current = getResources().getConfiguration().locale;
 
 
         String keyWord ="";
@@ -381,7 +458,7 @@ public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCa
         }
 
         new NRPlaces.Builder()
-                .listener(this)
+                .listener(this).language(current.getLanguage(),current.getISO3Country())
                 .key(getString(R.string.google_api_key))
                 .latlng(latitud, longitud)
                 .radius(500).keyword(keyWord)
@@ -397,17 +474,23 @@ public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCa
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        hidepDialog();
+
 
     }
 
 
     @Override
     public void onPlacesFailure(PlacesException e) {
+        hidepDialog();
+
 
     }
 
     @Override
     public void onPlacesStart() {
+        hidepDialog();
+
 
     }
 
@@ -417,13 +500,16 @@ public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCa
 
 
         placesFound = places;
+        for(noman.googleplaces.Place place :places){
+            historicPlaces.add(place);
+        }
 
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
                 Log.d("UI thread", "I am the UI thread");
 
-                currentMap.clear();
+                //currentMap.clear();
                 currentMap.addMarker(new MarkerOptions()
                         .position(new LatLng(latitud,longitud))
                         .title(getString(R.string.current_position))).showInfoWindow();
@@ -436,11 +522,71 @@ public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCa
             }
         });
 
+        hidepDialog();
+
 
     }
 
     @Override
     public void onPlacesFinished() {
+        hidepDialog();
 
     }
+
+    private void justCoffeSEarch() {
+        Locale current = getResources().getConfiguration().locale;
+
+        String keyWord ="";
+        if(categoriaSeleccionada != null){
+            keyWord = categoriaSeleccionada.getDisplay_title();
+        }else{
+            keyWord ="";
+        }
+
+        new NRPlaces.Builder()
+                .listener(this).language(current.getLanguage(),current.getCountry())
+                .key(getString(R.string.google_api_key))
+                .latlng(latitud, longitud)
+                .type(PlaceType.CAFE)
+                .radius(500)
+                .build()
+                .execute();
+    }
+
+
+    private void centerMapOnCurrentLocation(){
+        if (ContextCompat.checkSelfPermission(FilterActivity.this,
+                Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(FilterActivity.this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION)) {
+
+                // Show an expanation to the user *asynchronously* -- don't block
+
+
+            } else {
+
+
+                ActivityCompat.requestPermissions(FilterActivity.this,
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+
+            }
+        } else {
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            if (location != null) {
+                                currentLocation = location;
+                                centerLocationOnScreenFirstTime();
+                            }
+                        }
+                    });
+        }
+    }
+
+
+
 }

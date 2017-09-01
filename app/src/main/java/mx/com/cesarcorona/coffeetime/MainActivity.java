@@ -11,10 +11,12 @@ import android.widget.Button;
 import com.google.firebase.auth.FirebaseAuth;
 
 import mx.com.cesarcorona.coffeetime.activities.CoffeTimeActiviy;
+import mx.com.cesarcorona.coffeetime.activities.JustCoffeActivity;
 
 public class MainActivity extends AppCompatActivity {
 
     private CardView cooffee, merienda;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkDatesActivity(){
-        Intent intent = new Intent(MainActivity.this,CoffeTimeActiviy.class);
+        Intent intent = new Intent(MainActivity.this,JustCoffeActivity.class);
         startActivity(intent);
     }
 

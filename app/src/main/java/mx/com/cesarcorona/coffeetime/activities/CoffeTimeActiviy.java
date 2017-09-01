@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.DatePicker;
@@ -21,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import mx.com.cesarcorona.coffeetime.MainActivity;
@@ -48,6 +50,7 @@ public class CoffeTimeActiviy extends BaseAnimatedActivity implements DatePicker
     private ImageView dateSelector , timeSelector;
     private String dateSelected , timeSelected;
     private ImageView homeButton ,nextButtton;
+    private Date fechaEnCalendario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +114,11 @@ public class CoffeTimeActiviy extends BaseAnimatedActivity implements DatePicker
         });
 
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
+
+
 
 
     }
@@ -126,12 +134,28 @@ public class CoffeTimeActiviy extends BaseAnimatedActivity implements DatePicker
     private void updateLabel() {
         String myFormat = "MM/dd/yy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
-        dateEditText.setText(sdf.format(myCalendar.getTime()));
-        dateSelected = dateEditText.getText().toString();
+        Date dateOnCAlendar =myCalendar.getTime() ;
+        Date now =Calendar.getInstance().getTime();
+        fechaEnCalendario = dateOnCAlendar;
+        if(dateOnCAlendar.after(now) || dateOnCAlendar.equals(now)){
+            dateEditText.setText(sdf.format(myCalendar.getTime()));
+            dateSelected = dateEditText.getText().toString();
+        }else{
+            Toast.makeText(this,"You have to select a future Date",Toast.LENGTH_LONG).show();
+        }
+
     }
 
     @Override
     public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
+
+        Calendar rightNow = Calendar.getInstance();
+        Date now =Calendar.getInstance().getTime();
+        int hourNow = rightNow.get(Calendar.HOUR_OF_DAY);
+        boolean isPassedTime = false;
+        if(hourNow>hourOfDay){
+            isPassedTime = true;
+        }
         String aMpM = "AM";
         if(hourOfDay >11)
         {
@@ -148,10 +172,23 @@ public class CoffeTimeActiviy extends BaseAnimatedActivity implements DatePicker
             currentHour = hourOfDay;
         }
 
-        //Display the user changed time on TextView
-        timeEditText.setText(String.valueOf(currentHour)
-                + " : " + String.valueOf(minute) + " " + aMpM + "\n");
-        timeSelected = timeEditText.getText().toString();
+        if(fechaEnCalendario.equals(now)){
+            if(isPassedTime){
+                Toast.makeText(this,"You have to select a future hour",Toast.LENGTH_LONG).show();
+
+            }else{
+                timeEditText.setText(String.valueOf(currentHour)
+                        + " : " + String.valueOf(minute) + " " + aMpM);
+                timeSelected = timeEditText.getText().toString();
+            }
+        }else{
+            timeEditText.setText(String.valueOf(currentHour)
+                    + " : " + String.valueOf(minute) + " " + aMpM);
+            timeSelected = timeEditText.getText().toString();
+        }
+
+
+
     }
 
 
