@@ -5,9 +5,13 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.appolica.flubber.Flubber;
 import com.google.android.gms.location.places.Place;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -18,7 +22,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.util.LinkedList;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import mx.com.cesarcorona.coffeetime.MainActivity;
 import mx.com.cesarcorona.coffeetime.R;
 import mx.com.cesarcorona.coffeetime.adapter.CoffeDateAdapter;
 import mx.com.cesarcorona.coffeetime.pojo.Categoria;
@@ -63,6 +70,12 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
     private LinearLayout searchingPanel;
     private ListView matchingList ;
     private boolean justCoffe;
+    private ImageView animatedLog;
+    private TextView not_match;
+    private ImageView homeButton;
+
+    private static final long SPLASH_SCREEN_DELAY = 3000;
+
 
 
 
@@ -72,16 +85,27 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
         setContentView(R.layout.activity_search);
         matchingList = (ListView) findViewById(R.id.matching_dates_list);
         searchingPanel = (LinearLayout) findViewById(R.id.loading_page);
+        animatedLog = (ImageView)findViewById(R.id.animated_logo);
+        not_match = (TextView)findViewById(R.id.not_match);
         pDialog = new ProgressDialog(this);
         pDialog.setMessage("Por favor espera...");
         pDialog.setCancelable(false);
+        homeButton = (ImageView) findViewById(R.id.home_icon);
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent homeActivity = new Intent(SearchActivity.this, MainActivity.class);
+                startActivity(homeActivity);
+                finish();
+            }
+        });
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
         Gson gson = new Gson();
-        showpDialog();
+      //  showpDialog();
         numberOfSrikes = 0;
         numberErrors = 0;
         availableDates = new LinkedList<>();
@@ -110,11 +134,26 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
                     }
                 }
 
-                if(availableDates != null && availableDates.size()>0){
-                    generateMatchingCards();
-                }else{
-                    presentCoffeDate();
-                }
+
+                TimerTask task = new TimerTask() {
+                    @Override
+                    public void run() {
+                        Thread.currentThread()
+                                .setName(this.getClass().getSimpleName() + ": " + Thread.currentThread().getName());
+
+                        if(availableDates != null && availableDates.size()>0){
+                            generateMatchingCards();
+                        }else{
+                            presentCoffeDate();
+                        }
+
+                    }
+                };
+
+                Timer timer = new Timer();
+                timer.schedule(task, SPLASH_SCREEN_DELAY);
+
+
             }
 
 
@@ -126,6 +165,14 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
         });
 
 
+        Flubber.with()
+                .animation(Flubber.AnimationPreset.FADE_OUT_IN) // Slide up animation
+                .repeatCount(100)                              // Repeat once
+                .duration(1000)                              // Last for 1000 milliseconds(1 second)
+                .createFor(animatedLog)                             // Apply it to the view
+                .start();
+
+
 
 
     }
@@ -133,6 +180,14 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
 
 
     private void presentCoffeDate(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                animatedLog.setVisibility(View.GONE);
+                not_match.setVisibility(View.VISIBLE);
+            }
+        });
+
         CoffeDate date = new CoffeDate();
         date.setOpenDate(true);
         date.setUser1(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -166,6 +221,16 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
     }
 
     private void generateMatchingCards(){
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                animatedLog.setVisibility(View.GONE);
+                matchingList.setVisibility(View.VISIBLE);
+            }
+        });
+
+
         for(CoffeDate coffeDate:availableDates){
              coffeDate.fullFillUserProfileWithReference(USER_PROFILES_REFERENCE +"/" +coffeDate.getUser1() );
         }
@@ -179,11 +244,11 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
             //finisFill all user profiles
          coffeDateAdapter = new CoffeDateAdapter(this,availableDates);
          matchingList.setAdapter(coffeDateAdapter);
-            hidepDialog();
+          //  hidepDialog();
 
 
         }else {
-            hidepDialog();
+           // hidepDialog();
 
             //Show error
         }

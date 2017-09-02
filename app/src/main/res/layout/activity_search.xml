@@ -47,62 +47,90 @@
 
 
 
-
-
-        <LinearLayout
-            android:layout_marginTop="20dp"
-            android:background="@drawable/speech"
-            android:layout_gravity="center_vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:gravity="center"
-                android:keepScreenOn="true"
-                android:text="@string/search"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
-
-
-
-
     <RelativeLayout
-        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
 
-
         <LinearLayout
-            android:visibility="gone"
-            android:id="@+id/loading_page"
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
-            <ProgressBar
+            <LinearLayout
+                android:layout_marginTop="20dp"
+                android:background="@drawable/speech"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:keepScreenOn="true"
+                    android:text="@string/search"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+
+            <ListView
+                android:layout_marginTop="20dp"
+                android:visibility="gone"
+                android:id="@+id/matching_dates_list"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent">
+
+            </ListView>
+
 
 
         </LinearLayout>
 
 
-        <ListView
-            android:visibility="gone"
-            android:id="@+id/matching_dates_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
-        </ListView>
+
+        <LinearLayout
+            android:layout_centerInParent="true"
+            android:visibility="visible"
+            android:id="@+id/loading_page"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/animated_logo"
+                android:src="@drawable/coffe_logo"
+                android:layout_gravity="center"
+                android:layout_width="200dp"
+                android:layout_height="200dp" />
+
+
+        </LinearLayout>
+
+
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/not_match"
+            android:gravity="center"
+            style="@style/TextViewComicSans"
+            android:textColor="#000"
+            android:textSize="22sp"
+            android:text="No matches found right now, your coffe date was reserved"
+            android:padding="30dp"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+
 
 
 
@@ -123,6 +151,7 @@
                 android:layout_height="match_parent" />
 
             <ImageView
+                android:visibility="gone"
                 android:src="@drawable/ic_arrow_forward_black_36dp"
                 android:layout_marginRight="20dp"
                 android:layout_alignParentRight="true"
@@ -137,6 +166,13 @@
 
 
     </RelativeLayout>
+
+
+
+
+
+
+
 
 
 
