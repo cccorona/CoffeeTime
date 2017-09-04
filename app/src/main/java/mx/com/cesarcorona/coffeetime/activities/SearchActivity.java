@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.appolica.flubber.Flubber;
 import com.google.android.gms.location.places.Place;
@@ -232,6 +233,7 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
 
 
         for(CoffeDate coffeDate:availableDates){
+             coffeDate.setFillInformationInterface(this);
              coffeDate.fullFillUserProfileWithReference(USER_PROFILES_REFERENCE +"/" +coffeDate.getUser1() );
         }
 
@@ -240,6 +242,7 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
 
     @Override
     public void OnDataChangeSuccess() {
+        numberOfSrikes++;
         if(numberOfSrikes == availableDates.size() && numberErrors == 0){
             //finisFill all user profiles
          coffeDateAdapter = new CoffeDateAdapter(this,availableDates);
@@ -265,13 +268,15 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
     @Override
     public void OnConnectButton(CoffeDate coffeDate) {
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(DATES_REFERENCE+coffeDate.getDataBaseReference());
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(DATA_BASE_PATH+"/"+coffeDate.getDataBaseReference());
         databaseReference.child("user2").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        databaseReference.child("openDate").setValue(false);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 CoffeDate date = dataSnapshot.getValue(CoffeDate.class);
                 ((CoffeDateAdapter)matchingList.getAdapter()).updateList(date);
+                Toast.makeText(SearchActivity.this,"Coffe Date Complete",Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -284,8 +289,11 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
 
     @Override
     public void OnReview(CoffeDate coffeDate) {
-        Intent reviewIntent = new Intent(this,ReviewActivity.class);
-        startActivity(reviewIntent);
+        Intent intent= new Intent(SearchActivity.this, ReviewActivity.class);
+        Bundle extras = new Bundle();
+        extras.putString(ReviewActivity.KEY_USER,coffeDate.getUser1());
+        intent.putExtras(extras);
+        startActivity(intent);
     }
 
     @Override

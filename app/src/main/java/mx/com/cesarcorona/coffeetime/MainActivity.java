@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import mx.com.cesarcorona.coffeetime.activities.CoffeTimeActiviy;
 import mx.com.cesarcorona.coffeetime.activities.JustCoffeActivity;
+import mx.com.cesarcorona.coffeetime.activities.ReviewActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         merienda.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                checkDatesActivity();
+                meriendaActivity();
             }
         });
 
@@ -56,6 +57,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkDatesActivity(){
         Intent intent = new Intent(MainActivity.this,JustCoffeActivity.class);
+        startActivity(intent);
+    }
+
+    private void meriendaActivity(){
+        Intent intent= new Intent(MainActivity.this, ReviewActivity.class);
+        Bundle extras = new Bundle();
+        extras.putString(ReviewActivity.KEY_USER,FirebaseAuth.getInstance().getCurrentUser().getUid());
+        intent.putExtras(extras);
         startActivity(intent);
     }
 

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+        <TextView
+            android:layout_gravity="center"
+            android:id="@+id/review_name"
+            android:textColor="#000"
+            android:text="Jhon Andrew P"
+            android:textSize="18sp"
+            android:padding="10dp"
+            style="@style/TextViewComicSans"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+        <LinearLayout
+            android:paddingRight="20dp"
+            android:gravity="end"
+            android:layout_gravity="end"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/one"
+                android:src="@drawable/ic_grade_black_36dp"
+                android:layout_gravity="center"
+                android:layout_width="36dp"
+                android:layout_height="36dp" />
+            <ImageView
+                android:id="@+id/two"
+                android:src="@drawable/ic_grade_black_36dp"
+                android:layout_gravity="center"
+                android:layout_width="36dp"
+                android:layout_height="36dp" />
+            <ImageView
+                android:id="@+id/tree"
+                android:src="@drawable/ic_grade_black_36dp"
+                android:layout_gravity="center"
+                android:layout_width="36dp"
+                android:layout_height="36dp" />
+            <ImageView
+                android:id="@+id/four"
+                android:src="@drawable/ic_grade_black_36dp"
+                android:layout_gravity="center"
+                android:layout_width="36dp"
+                android:layout_height="36dp" />
+            <ImageView
+                android:id="@+id/five"
+                android:src="@drawable/ic_grade_black_36dp"
+                android:layout_gravity="center"
+                android:layout_width="36dp"
+                android:layout_height="36dp" />
+
+
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+    <TextView
+
+        android:text="This is a sample for a review. Fill it as you like it. See you soon.  "
+        android:padding="20dp"
+        android:textColor="#000"
+        android:textSize="18sp"
+        style="@style/TextViewComicSans"
+        android:id="@+id/review_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+</LinearLayout>

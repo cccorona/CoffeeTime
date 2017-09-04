@@ -32,6 +32,7 @@
     <string name="splash_sub">its all About meeting new friends</string>
     <string name="place_Selected">You need to select a place from map to continue</string>
     <string name="topic">Topic?</string>
+    <string name="please_wait">Please wait...</string>
 
 </resources>
 
