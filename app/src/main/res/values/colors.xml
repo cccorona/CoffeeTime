@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#4dacc4</color>
+    <color name="colorPrimary">#64d6f5</color>
     <color name="colorPrimaryDark">#3e9bb3</color>
     <color name="colorAccent">#116e85</color>
 
     <color name="black_overlay">#66000000</color>
-    <color name="color_spash">#4dacc4</color>
+    <color name="color_spash">#64d6f5</color>
     <color name="color_splash_text">#77e5f5</color>
 
-    217f96
+
+    <color name="cream_background">#fafafa</color>
+
+
+
+
+
 </resources>

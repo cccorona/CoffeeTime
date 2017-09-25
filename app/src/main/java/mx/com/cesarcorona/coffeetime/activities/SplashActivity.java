@@ -55,7 +55,7 @@ public class SplashActivity extends BaseAnimatedActivity {
         auth = FirebaseAuth.getInstance();
         rootView = (RelativeLayout) findViewById(R.id.root_view);
         ImageView button = (ImageView) findViewById(R.id.coffe_loggo_button);
-        button.setOnClickListener(new View.OnClickListener() {
+        rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (auth.getCurrentUser() != null) {
