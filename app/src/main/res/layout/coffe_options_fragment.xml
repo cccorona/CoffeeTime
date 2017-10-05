@@ -3,6 +3,7 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="#FFF"
+    android:id="@+id/myScroolView"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -162,7 +163,7 @@
 
 
         <LinearLayout
-            android:id="@+id/linear_location"
+            android:id="@+id/linear_location_button"
             android:orientation="horizontal"
             android:background="@drawable/black_border"
             android:layout_margin="10dp"
@@ -219,6 +220,66 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/TextViewComicSans"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:keepScreenOn="true"
+                        android:gravity="left"
+                        android:padding="18dp"
+                        android:text="People in your party?"
+                        android:textColor="#000"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
+
+
+                    <LinearLayout
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/agetext"
+                            android:textStyle="bold"
+                            android:textSize="24sp"
+                            android:text="1"
+                            android:padding="15dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+
+
+                        <Button
+                            android:id="@+id/minus_button"
+                            android:textSize="22sp"
+                            android:text="-"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp" />
+
+                        <Button
+                            android:id="@+id/plus_button"
+                            android:textSize="22sp"
+                            android:text="+"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp" />
+
+
+
+
+                    </LinearLayout>
+
+
+
+                </LinearLayout>
+
 
                 <RelativeLayout
                     android:layout_marginTop="10dp"
