@@ -1,62 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="mx.com.cesarcorona.coffeetime.MainActivity">
-
-
-
-
-    <android.support.design.widget.AppBarLayout
-        android:visibility="visible"
-        android:layout_width="match_parent"
-        android:layout_height="60dp">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-
-            <android.support.v7.widget.Toolbar
-                style="@style/MyToolbarStyle"
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                />
-
-            <TextView
-                android:visibility="visible"
-                android:layout_marginLeft="10dp"
-                android:padding="10dp"
-                android:textSize="30sp"
-                android:textStyle="bold"
-                android:textAllCaps="true"
-                android:gravity="center"
-                android:textColor="#FFF"
-                android:text="@string/app_name"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-
-
-        </RelativeLayout>
-
-
-
-
-    </android.support.design.widget.AppBarLayout>
-
-
-    <Button
-        android:visibility="gone"
-        android:textSize="40dp"
-        android:text="Salir"
-        android:id="@+id/log_out_button"
-        android:layout_width="match_parent"
-        android:layout_height="200dp" />
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:showIn="@layout/app_bar_main_settings">
 
 
     <LinearLayout
@@ -214,10 +162,6 @@
 
 
     </LinearLayout>
-
-
-
-
 
 
 

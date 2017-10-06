@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
 
-
     <application
         android:name=".CooffeTimeApplication"
         android:allowBackup="true"
@@ -67,7 +66,12 @@
 
         <activity android:name=".activities.ChatActivity" />
         <activity android:name=".activities.ReviewActivity" />
-        <activity android:name=".activities.JustCoffeActivity"></activity>
+        <activity android:name=".activities.JustCoffeActivity" />
+        <activity
+            android:name=".activities.MainSettingsActivity"
+            android:label="@string/title_activity_main_settings"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".activities.HistoryChatActivity"></activity>
     </application>
 
 </manifest>

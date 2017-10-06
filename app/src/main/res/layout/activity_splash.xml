@@ -41,7 +41,7 @@
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_gravity="center"
                 android:layout_height="match_parent"
-                android:background="@drawable/white_circle"
+                android:background="@drawable/logo_coffe_time"
                 android:layout_width="match_parent"
                 android:id="@+id/coffe_loggo_button"
                 app:civ_border_width="4dp"
@@ -49,7 +49,6 @@
                 app:civ_border_color="#FF000000"/>
 
             <ImageView
-                android:src="@drawable/coffe_logo"
                 android:layout_centerInParent="true"
                 android:layout_width="200dp"
                 android:layout_height="200dp"

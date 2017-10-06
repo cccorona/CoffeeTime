@@ -101,7 +101,7 @@ public class SplashActivity extends BaseAnimatedActivity {
 
 
     private void goToMainActivity() {
-        Intent mainIntent = new Intent(SplashActivity.this, MainActivity.class);
+        Intent mainIntent = new Intent(SplashActivity.this, MainSettingsActivity.class);
         startActivity(mainIntent);
         finish();
     }

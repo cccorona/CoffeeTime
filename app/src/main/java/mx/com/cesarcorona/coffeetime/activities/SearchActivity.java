@@ -95,7 +95,7 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent homeActivity = new Intent(SearchActivity.this, MainActivity.class);
+                Intent homeActivity = new Intent(SearchActivity.this, MainSettingsActivity.class);
                 startActivity(homeActivity);
                 finish();
             }
@@ -205,7 +205,7 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
         pathBuilder.append(topicSeleccionado.getDataBaseReference()).append("/");
         pathBuilder.append(placeSeleccionado.getPlaceId()).append("/");
         pathBuilder.append(dateSelected).append("/");
-        pathBuilder.append((timeSelected));
+        //pathBuilder.append((timeSelected));
         return  pathBuilder.toString();
 
 
