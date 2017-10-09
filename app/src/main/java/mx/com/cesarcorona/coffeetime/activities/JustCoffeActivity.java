@@ -113,7 +113,7 @@ public class JustCoffeActivity extends BaseAnimatedActivity implements DatePicke
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent homeActivity = new Intent(JustCoffeActivity.this, MainActivity.class);
+                Intent homeActivity = new Intent(JustCoffeActivity.this, MainSettingsActivity.class);
                 startActivity(homeActivity);
                 finish();
             }

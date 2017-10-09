@@ -18,6 +18,7 @@ import java.util.Map;
 
 import mx.com.cesarcorona.coffeetime.MainActivity;
 import mx.com.cesarcorona.coffeetime.R;
+import mx.com.cesarcorona.coffeetime.activities.MainSettingsActivity;
 
 /**
  * Created by ccabrera on 29/08/17.
@@ -51,7 +52,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private void sendNotification(RemoteMessage.Notification notification, Map<String, String> data) {
         Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
 
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, MainSettingsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 

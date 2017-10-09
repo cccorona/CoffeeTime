@@ -18,6 +18,7 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
+            android:layout_marginBottom="100dp"
             android:layout_height="wrap_content">
 
 
@@ -44,7 +45,6 @@
                     android:layout_gravity="center"
                     android:textSize="16sp"
                     android:textAllCaps="true"
-                    android:maxLines="2"
                     android:text="@string/set_your_date_and_time"
                     android:padding="10dp"
                     android:layout_width="wrap_content"
@@ -363,6 +363,105 @@
 
 
             </RelativeLayout>
+
+
+            <LinearLayout
+                android:id="@+id/linear_facorite_meal"
+                android:orientation="horizontal"
+                android:background="@drawable/black_border"
+                android:layout_margin="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="90dp">
+
+
+                <ImageView
+                    android:layout_gravity="center"
+                    android:src="@drawable/meal_icon"
+                    android:layout_marginLeft="20dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp" />
+
+
+                <TextView
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:textSize="16sp"
+                    android:textAllCaps="true"
+                    android:text="@string/set_your_prefered_meal"
+                    android:padding="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:layout_marginRight="10dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerInParent="true"
+                        android:id="@+id/meal_finish"
+                        android:visibility="gone"
+                        android:src="@drawable/check"
+                        android:layout_marginLeft="0dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp" />
+
+                </RelativeLayout>
+
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/meal_content"
+                android:background="@color/cream_background"
+                android:layout_margin="20dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/TextViewComicSans"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:keepScreenOn="true"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="@string/topic"
+                    android:textColor="#000"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                    <Spinner
+                        android:layout_alignParentLeft="true"
+                        android:id="@+id/mealSpinner"
+                        android:layout_width="200dp"
+                        android:layout_marginTop="10dp"
+                        android:minWidth="150dp"
+                        android:layout_marginLeft="40dp"
+                        android:layout_marginRight="60dp"
+                        android:layout_height="40dp">
+
+                    </Spinner>
+
+
+
+                </RelativeLayout>
+
+
+            </LinearLayout>
 
 
 

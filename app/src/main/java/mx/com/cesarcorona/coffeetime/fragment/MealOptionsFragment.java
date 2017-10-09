@@ -63,6 +63,7 @@ import java.util.List;
 import java.util.Locale;
 
 import mx.com.cesarcorona.coffeetime.R;
+import mx.com.cesarcorona.coffeetime.activities.MealSearchActivity;
 import mx.com.cesarcorona.coffeetime.activities.SearchActivity;
 import mx.com.cesarcorona.coffeetime.adapter.CategoryAdapter;
 import mx.com.cesarcorona.coffeetime.adapter.TopicsAdapter;
@@ -82,7 +83,7 @@ import static android.view.View.GONE;
 public class MealOptionsFragment extends Fragment implements OnMapReadyCallback,CategoryAdapter.CategorySelectedListener, GoogleApiClient.OnConnectionFailedListener , PlacesListener {
 
 
-    public static String TAG = CoffeOptionsFragment.class.getSimpleName();
+    public static String TAG = MealOptionsFragment.class.getSimpleName();
 
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 100;
@@ -111,8 +112,8 @@ public class MealOptionsFragment extends Fragment implements OnMapReadyCallback,
 
 
 
-    private LinearLayout linearTimeAndDate , linearLocation, linearTopic, topicContent;
-    private ImageView timeFinish, locationFinish , topiFinish;
+    private LinearLayout linearTimeAndDate , linearLocation, linearTopic,linearMeal, topicContent,mealContent;
+    private ImageView timeFinish, locationFinish , topiFinish ,mealFinish;
     private RelativeLayout timeAnDateContent ,locationContent;
 
 
@@ -153,7 +154,10 @@ public class MealOptionsFragment extends Fragment implements OnMapReadyCallback,
 
     private LinkedList<Topic> allTopics;
     private Spinner topicSelector;
+    private Spinner mealSelector;
+
     private TopicsAdapter categoryAdapter;
+    private CategoryAdapter mealsAdapter;
     private RelativeLayout searchButtonR;
 
     private String dateSelected , timeSelected;
@@ -186,11 +190,13 @@ public class MealOptionsFragment extends Fragment implements OnMapReadyCallback,
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.coffe_options_fragment,container,false);
+        rootView = inflater.inflate(R.layout.meal_options_fragment,container,false);
         timeFinish = (ImageView) rootView.findViewById(R.id.date_finish);
         locationFinish = (ImageView)rootView.findViewById(R.id.location_finish);
         topiFinish = (ImageView)rootView.findViewById(R.id.topic_finish);
+        mealFinish = (ImageView)rootView.findViewById(R.id.meal_finish);
         topicSelector = (Spinner) rootView.findViewById(R.id.categorySpinner);
+        mealSelector = (Spinner)rootView.findViewById(R.id.mealSpinner);
         databaseReference = FirebaseDatabase.getInstance().getReference(TOPICS_REFERENCE);
         searchButtonR = (RelativeLayout)rootView.findViewById(R.id.start_searching_button);
 
@@ -201,14 +207,16 @@ public class MealOptionsFragment extends Fragment implements OnMapReadyCallback,
         linearTimeAndDate = (LinearLayout) rootView.findViewById(R.id.linear_date_button);
         timeAnDateContent = (RelativeLayout)rootView.findViewById(R.id.date_time_content);
         locationContent = (RelativeLayout)rootView.findViewById(R.id.location_content);
+        mealContent  = (LinearLayout)rootView.findViewById(R.id.meal_content);
         topicContent = (LinearLayout)rootView.findViewById(R.id.topic_content);
         linearLocation= (LinearLayout)rootView.findViewById(R.id.linear_location_button);
         linearTopic = (LinearLayout) rootView.findViewById(R.id.linear_topyc);
+        linearMeal= (LinearLayout)rootView.findViewById(R.id.linear_facorite_meal);
 
         linearTimeAndDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toggleTimeAndDate();
+                toggleFilters(v);
             }
         });
 
@@ -219,14 +227,22 @@ public class MealOptionsFragment extends Fragment implements OnMapReadyCallback,
                     fakeOnCreate = false;
                     setUpLocationOptions();
                 }
-                toogleLocation();
+                toggleFilters(v);
             }
         });
 
         linearTopic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toggleFilters();
+                toggleFilters(v);
+            }
+        });
+
+
+        linearMeal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleFilters(v);
             }
         });
 
@@ -281,6 +297,8 @@ public class MealOptionsFragment extends Fragment implements OnMapReadyCallback,
                 topicSelector.setAdapter(dataAdapter);
 
                 categoryAdapter = new TopicsAdapter(allTopics,getActivity());
+                topicSelector.setOnItemSelectedListener(new MealOptionsFragment.mySpinnerListener());
+
                 //categoryAdapter.setCategorySelectedListener(FilterTopicsActivity.this);
                 //     topicSelector.setAdapter(categoryAdapter);
                 // hidepDialog();
@@ -293,7 +311,44 @@ public class MealOptionsFragment extends Fragment implements OnMapReadyCallback,
             }
         });
 
-        topicSelector.setOnItemSelectedListener(new MealOptionsFragment.mySpinnerListener());
+
+
+        DatabaseReference databaseReferenceMeal = FirebaseDatabase.getInstance().getReference(CATEGORIAS_REFERENCE);
+        databaseReferenceMeal.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot categoriaSnap : dataSnapshot.getChildren()) {
+                    Categoria categoria = categoriaSnap.getValue(Categoria.class);
+                    categoria.setDataBaseReference(categoriaSnap.getKey());
+                    allcategorias.add(categoria);
+                }
+
+                LinkedList<String> list = new LinkedList<String>();
+                for(Categoria cateogria:allcategorias){
+                    list.add(cateogria.getDisplay_title());
+                }
+                ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
+                        android.R.layout.simple_spinner_item, list);
+                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                mealSelector.setAdapter(dataAdapter);
+
+                mealsAdapter = new CategoryAdapter(allcategorias,getActivity());
+                mealSelector.setOnItemSelectedListener(new MealOptionsFragment.MealSpinnerListener());
+
+                //categoryAdapter.setCategorySelectedListener(FilterTopicsActivity.this);
+                //     topicSelector.setAdapter(categoryAdapter);
+                // hidepDialog();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
 
 
 
@@ -324,7 +379,7 @@ public class MealOptionsFragment extends Fragment implements OnMapReadyCallback,
                 }
                 extras.putInt(KEY_PARTY_NUMBER,number);
                 extras.putSerializable(KEY_TOPIC,topicSeleccionado);
-                Intent filterIntent = new Intent(getActivity(),SearchActivity.class);
+                Intent filterIntent = new Intent(getActivity(),MealSearchActivity.class);
                 filterIntent.putExtras(extras);
                 startActivity(filterIntent);
                 getActivity().finish();
@@ -349,6 +404,7 @@ public class MealOptionsFragment extends Fragment implements OnMapReadyCallback,
         fakeOnCreate = true;
         justCoffe = true;
         allTopics = new LinkedList<>();
+        allcategorias = new LinkedList<>();
 
     }
 
@@ -400,7 +456,7 @@ public class MealOptionsFragment extends Fragment implements OnMapReadyCallback,
         timeAnDateContent.setVisibility(GONE);
     }
 
-    private void toggleFilters(){
+    private void toggleFilters(View v){
         optionsIsFinish();
 
         if(isFirsttime){
@@ -409,14 +465,51 @@ public class MealOptionsFragment extends Fragment implements OnMapReadyCallback,
                 isFirsttime = false ;
             }
         }
-        if(topicContent.getVisibility() ==View.VISIBLE){
-            topicContent.setVisibility(GONE);
-        }else{
-            topicContent.setVisibility(View.VISIBLE);
 
+        switch (v.getId()){
+            case R.id.linear_date_button:
+                if(timeAnDateContent.getVisibility() == View.VISIBLE){
+                    timeAnDateContent.setVisibility(GONE);
+                }else{
+                    timeAnDateContent.setVisibility(View.VISIBLE);
+                }
+                locationContent.setVisibility(GONE);
+                mealContent.setVisibility(GONE);
+                topicContent.setVisibility(GONE);
+
+                break;
+            case R.id.linear_location_button:
+                if(locationContent.getVisibility() == View.VISIBLE){
+                    locationContent.setVisibility(GONE);
+                }else{
+                    locationContent.setVisibility(View.VISIBLE);
+                }
+                timeAnDateContent.setVisibility(GONE);
+                mealContent.setVisibility(GONE);
+                topicContent.setVisibility(GONE);
+                break;
+            case R.id.linear_facorite_meal:
+                if(mealContent.getVisibility() == View.VISIBLE){
+                    mealContent.setVisibility(GONE);
+                }else{
+                    mealContent.setVisibility(View.VISIBLE);
+                }
+                timeAnDateContent.setVisibility(GONE);
+                locationContent.setVisibility(GONE);
+                topicContent.setVisibility(GONE);
+                break;
+            case R.id.linear_topyc:
+                if(topicContent.getVisibility() == View.VISIBLE){
+                    topicContent.setVisibility(GONE);
+                }else{
+                    topicContent.setVisibility(View.VISIBLE);
+                }
+                locationContent.setVisibility(GONE);
+                mealContent.setVisibility(GONE);
+                timeAnDateContent.setVisibility(GONE);
+                break;
         }
-        locationContent.setVisibility(GONE);
-        timeAnDateContent.setVisibility(GONE);
+
     }
 
     private void toggleTimeAndDate(){
@@ -501,10 +594,10 @@ public class MealOptionsFragment extends Fragment implements OnMapReadyCallback,
         pDialog = new ProgressDialog(getActivity());
         pDialog.setMessage(getString(R.string.please_wait_d));
         pDialog.setCancelable(false);
-        allcategorias = new LinkedList<>();
+       // allcategorias = new LinkedList<>();
         historicPlaces = new LinkedList<>();
         // showpDialog();
-        justCoffe = true ;
+        justCoffe = false ;
         databaseReference = FirebaseDatabase.getInstance().getReference(CATEGORIAS_REFERENCE);
 
         mapFragment = (WorkaroundMapFragment) getChildFragmentManager()
@@ -630,13 +723,13 @@ public class MealOptionsFragment extends Fragment implements OnMapReadyCallback,
 
 
     private void showpDialog() {
-        if (!pDialog.isShowing())
-            pDialog.show();
+      /*  if (!pDialog.isShowing())
+            pDialog.show();*/
     }
 
     private void hidepDialog() {
-        if (pDialog.isShowing())
-            pDialog.dismiss();
+       /* if (pDialog.isShowing())
+            pDialog.dismiss();*/
     }
 
     private void searchPlaces() {
@@ -776,14 +869,14 @@ public class MealOptionsFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onPlacesFailure(PlacesException e) {
-        hidepDialog();
+       // hidepDialog();
 
 
     }
 
     @Override
     public void onPlacesStart() {
-        hidepDialog();
+       // hidepDialog();
 
 
     }
@@ -816,14 +909,14 @@ public class MealOptionsFragment extends Fragment implements OnMapReadyCallback,
             }
         });
 
-        hidepDialog();
+        //hidepDialog();
 
 
     }
 
     @Override
     public void onPlacesFinished() {
-        hidepDialog();
+       // hidepDialog();
 
     }
 
@@ -842,10 +935,36 @@ public class MealOptionsFragment extends Fragment implements OnMapReadyCallback,
                 .key(getString(R.string.google_api_key))
                 .latlng(latitud, longitud)
                 .type(PlaceType.CAFE)
-                .radius(500)
+                .radius(3000)
                 .build()
                 .execute();
     }
+
+
+    private void categorySearch(){
+            if(currentMap!= null){
+                currentMap.clear();
+            }
+            Locale current = getResources().getConfiguration().locale;
+
+            String keyWord ="";
+            if(categoriaSeleccionada != null){
+                keyWord = categoriaSeleccionada.getDisplay_title();
+            }else{
+                keyWord ="";
+            }
+
+            new NRPlaces.Builder()
+                    .listener(this).language(current.getLanguage(),current.getCountry())
+                    .key(getString(R.string.google_api_key))
+                    .latlng(latitud, longitud)
+                    .keyword(keyWord)
+                    .radius(3000)
+                    .build()
+                    .execute();
+
+    }
+
 
 
     private void centerMapOnCurrentLocation(){
@@ -892,9 +1011,41 @@ public class MealOptionsFragment extends Fragment implements OnMapReadyCallback,
             Toast.makeText(parent.getContext(),
                     "Topic selected : " + parent.getItemAtPosition(position).toString(),
                     Toast.LENGTH_SHORT).show();
-            topicSeleccionado = allTopics.get(position);
-            topiFinish.setVisibility(View.VISIBLE);
-            optionsIsFinish();
+            if(allTopics != null && allTopics.size() >0){
+                topicSeleccionado = allTopics.get(position);
+                topiFinish.setVisibility(View.VISIBLE);
+                optionsIsFinish();
+            }
+
+
+
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView parent) {
+            // TODO Auto-generated method stub
+            // Do nothing.
+        }
+
+    }
+
+
+    class MealSpinnerListener implements Spinner.OnItemSelectedListener
+    {
+        @Override
+        public void onItemSelected(AdapterView parent, View v, int position,
+                                   long id) {
+
+            Toast.makeText(parent.getContext(),
+                    "Topic selected : " + parent.getItemAtPosition(position).toString(),
+                    Toast.LENGTH_SHORT).show();
+            if(allcategorias!= null && allcategorias.size() >0){
+                categoriaSeleccionada = allcategorias.get(position);
+                mealFinish.setVisibility(View.VISIBLE);
+                optionsIsFinish();
+                searchMealSelected();
+            }
+
 
 
         }
@@ -909,14 +1060,18 @@ public class MealOptionsFragment extends Fragment implements OnMapReadyCallback,
 
 
 
+
     private void optionsIsFinish(){
-        if(dateSelected != null && dateSelected.length() >1 && timeSelected != null && timeSelected.length() >1 && placeSeleccionado != null){
+        if(dateSelected != null && dateSelected.length() >1 && timeSelected != null && timeSelected.length() >1 && placeSeleccionado != null && categoriaSeleccionada != null){
             searchButtonR.setVisibility(View.VISIBLE);
         }
     }
 
 
 
+    private void searchMealSelected(){
+           categorySearch();
+    }
 
 
 

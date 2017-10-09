@@ -155,7 +155,7 @@ public class FilterActivity extends BaseAnimatedActivity implements OnMapReadyCa
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent homeActivity = new Intent(FilterActivity.this, MainActivity.class);
+                Intent homeActivity = new Intent(FilterActivity.this, MainSettingsActivity.class);
                 startActivity(homeActivity);
                 finish();
             }

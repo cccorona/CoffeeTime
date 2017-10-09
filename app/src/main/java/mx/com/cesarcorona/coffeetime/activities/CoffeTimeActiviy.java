@@ -89,7 +89,7 @@ public class CoffeTimeActiviy extends BaseAnimatedActivity implements DatePicker
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent homeActivity = new Intent(CoffeTimeActiviy.this, MainActivity.class);
+                Intent homeActivity = new Intent(CoffeTimeActiviy.this, MainSettingsActivity.class);
                 startActivity(homeActivity);
                 finish();
             }

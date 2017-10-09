@@ -33,7 +33,7 @@
     <string name="place_Selected">You need to select a place from map to continue</string>
     <string name="topic">Topic?</string>
     <string name="please_wait">Please wait...</string>
-    <string name="set_your_date_and_time">set your date and time</string>
+    <string name="set_your_date_and_time">set your date\n and time</string>
     <string name="set_your_location">set your location</string>
     <string name="set_your_topic">set your topic</string>
     <string name="please_wait_d">Please wait...</string>
@@ -57,6 +57,7 @@
     <string name="connect">Connect</string>
     <string name="rate_this_date">Rate this Date</string>
     <string name="leave_your_comments">leave your comments</string>
+    <string name="set_your_prefered_meal">SET YOUR \nPREFERED MEAL</string>
 
 </resources>
 

@@ -125,7 +125,7 @@ public class FilterTopicsActivity extends BaseAnimatedActivity {
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent homeActivity = new Intent(FilterTopicsActivity.this, MainActivity.class);
+                Intent homeActivity = new Intent(FilterTopicsActivity.this, MainSettingsActivity.class);
                 startActivity(homeActivity);
                 finish();
             }

@@ -102,7 +102,7 @@ public class ReviewActivity extends BaseAnimatedActivity {
         homeIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mainIntent = new Intent(ReviewActivity.this, MainActivity.class);
+                Intent mainIntent = new Intent(ReviewActivity.this, MainSettingsActivity.class);
                 startActivity(mainIntent);
                 finish();
             }

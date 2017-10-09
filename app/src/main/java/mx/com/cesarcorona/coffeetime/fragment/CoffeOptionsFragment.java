@@ -654,13 +654,13 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
 
 
     private void showpDialog() {
-        if (!pDialog.isShowing())
-            pDialog.show();
+        /*if (!pDialog.isShowing())
+            pDialog.show();*/
     }
 
     private void hidepDialog() {
-        if (pDialog.isShowing())
-            pDialog.dismiss();
+        /*if (pDialog.isShowing())
+            pDialog.dismiss();*/
     }
 
     private void searchPlaces() {

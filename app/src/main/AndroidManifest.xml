@@ -73,7 +73,8 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".activities.HistoryChatActivity" />
         <activity android:name=".activities.ReviewsActivity" />
-        <activity android:name=".activities.MyDatesActivity"></activity>
+        <activity android:name=".activities.MyDatesActivity" />
+        <activity android:name=".activities.MealSearchActivity"></activity>
     </application>
 
 </manifest>
