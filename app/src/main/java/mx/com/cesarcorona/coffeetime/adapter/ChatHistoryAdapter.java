@@ -31,6 +31,11 @@ public class ChatHistoryAdapter extends FirebaseListAdapter<ChatHistoryElement> 
 
 
     private HistoryChatActivity activity;
+    private ChatSelectedInterface chatSelectedInterface;
+
+    public interface ChatSelectedInterface{
+        void OnChatSelected(ChatHistoryElement chatRoom);
+    }
 
     public ChatHistoryAdapter(HistoryChatActivity context, Class<ChatHistoryElement> modelClass, @LayoutRes int modelLayout, DatabaseReference query) {
         super(context, modelClass, modelLayout, query);
@@ -38,8 +43,12 @@ public class ChatHistoryAdapter extends FirebaseListAdapter<ChatHistoryElement> 
     }
 
 
+    public void setChatSelectedInterface(ChatSelectedInterface chatSelectedInterface) {
+        this.chatSelectedInterface = chatSelectedInterface;
+    }
+
     @Override
-    protected void populateView(View v, ChatHistoryElement model, int position) {
+    protected void populateView(View v, final ChatHistoryElement model, int position) {
         ImageView userPhoto = (ImageView) v.findViewById(R.id.foto_chat);
         TextView nombreChat = (TextView)v.findViewById(R.id.nombreChat);
         TextView fechaChat = (TextView)v.findViewById(R.id.fecha_chat);
@@ -47,8 +56,19 @@ public class ChatHistoryAdapter extends FirebaseListAdapter<ChatHistoryElement> 
         if(model.getUserPhoto() != null){
             Picasso.with(activity).load(model.getUserPhoto()).fit().into(userPhoto);
         }
-        nombreChat.setText(model.getUserChatWith());
+        nombreChat.setText(model.getUserChatWithDisplayName());
         fechaChat.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", model.getUserChatDate()));
+
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(chatSelectedInterface != null){
+                      chatSelectedInterface.OnChatSelected(model);
+                }
+            }
+        });
+
+
 
 
     }

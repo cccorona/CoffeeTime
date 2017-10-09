@@ -61,7 +61,7 @@ import static mx.com.cesarcorona.coffeetime.services.MyFirebaseInstanceIDService
 import static mx.com.cesarcorona.coffeetime.services.MyFirebaseInstanceIDService.PREFERENCES_KEY;
 import static mx.com.cesarcorona.coffeetime.services.MyFirebaseInstanceIDService.USERS_REFERENCE;
 
-public class MainSettingsActivity extends AppCompatActivity
+public class MainSettingsActivity extends BaseAnimatedActivity
         implements NavigationView.OnNavigationItemSelectedListener,DatePickerDialog.OnDateSetListener ,
         TimePickerDialog.OnTimeSetListener ,CoffeOptionsFragment.OnActionSelectedListener  {
 
@@ -172,6 +172,14 @@ public class MainSettingsActivity extends AppCompatActivity
             }
         });
 
+
+        merienda.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         initUserData();
 
 
@@ -223,6 +231,18 @@ public class MainSettingsActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_q_a) {
 
+        }else if(id == R.id.nav_chat){
+            Intent chatIntent = new Intent(MainSettingsActivity.this,HistoryChatActivity.class);
+            startActivity(chatIntent);
+        }else if(id == R.id.nav_reviews){
+            Bundle extras = new Bundle();
+            extras.putSerializable(ReviewActivity.KEY_USER,FirebaseAuth.getInstance().getCurrentUser().getUid());
+            Intent reviewIntent = new Intent(MainSettingsActivity.this,ReviewActivity.class);
+            reviewIntent.putExtras(extras);
+            startActivity(reviewIntent);
+        }else if(id == R.id.nav_dates){
+            Intent myDatesIntent = new Intent(MainSettingsActivity.this,MyDatesActivity.class);
+            startActivity(myDatesIntent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -361,6 +381,9 @@ public class MainSettingsActivity extends AppCompatActivity
             UserProfile userProfile = new UserProfile();
             userProfile.setEmail(user.getEmail());
             userProfile.setName(user.getDisplayName());
+            if(user.getPhotoUrl() != null){
+                userProfile.setFotoUrl(user.getPhotoUrl().toString());
+            }
             profileReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(userProfile);
         }
     }

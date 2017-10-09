@@ -1,5 +1,7 @@
 package mx.com.cesarcorona.coffeetime.pojo;
 
+import com.google.firebase.database.Exclude;
+
 import java.io.Serializable;
 
 /**
@@ -13,6 +15,9 @@ public class ChatHistoryElement implements Serializable {
     private String userPhoto;
     private long userChatDate;
     private String userChatWithDisplayName;
+    @Exclude
+    private String dataBaseReference;
+
 
 
     public ChatHistoryElement(String userChatWith, String userPhoto, long userChatDate, String userChatWithDisplayName) {
@@ -20,6 +25,10 @@ public class ChatHistoryElement implements Serializable {
         this.userPhoto = userPhoto;
         this.userChatDate = userChatDate;
         this.userChatWithDisplayName = userChatWithDisplayName;
+    }
+
+
+    public ChatHistoryElement() {
     }
 
     public String getUserChatWith() {
@@ -52,5 +61,14 @@ public class ChatHistoryElement implements Serializable {
 
     public void setUserChatWithDisplayName(String userChatWithDisplayName) {
         this.userChatWithDisplayName = userChatWithDisplayName;
+    }
+
+
+    public String getDataBaseReference() {
+        return dataBaseReference;
+    }
+
+    public void setDataBaseReference(String dataBaseReference) {
+        this.dataBaseReference = dataBaseReference;
     }
 }

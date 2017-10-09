@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appolica.flubber.Flubber;
+import com.google.android.gms.identity.intents.AddressConstants;
 import com.google.android.gms.location.places.Place;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -49,6 +50,7 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
 
     public static String TAG = SearchActivity.class.getSimpleName();
     public static String DATES_REFERENCE = "dates/";
+    public static String USER_DATES_REFERENCE ="mydates";
 
 
     private DatabaseReference databaseReference;
@@ -89,7 +91,7 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
         animatedLog = (ImageView)findViewById(R.id.animated_logo);
         not_match = (TextView)findViewById(R.id.not_match);
         pDialog = new ProgressDialog(this);
-        pDialog.setMessage("Por favor espera...");
+        pDialog.setMessage(getResources().getString(R.string.please_wait_d));
         pDialog.setCancelable(false);
         homeButton = (ImageView) findViewById(R.id.home_icon);
         homeButton.setOnClickListener(new View.OnClickListener() {
@@ -246,7 +248,9 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
         if(numberOfSrikes == availableDates.size() && numberErrors == 0){
             //finisFill all user profiles
          coffeDateAdapter = new CoffeDateAdapter(this,availableDates);
+         coffeDateAdapter.setMatchingInterface(SearchActivity.this);
          matchingList.setAdapter(coffeDateAdapter);
+
           //  hidepDialog();
 
 
@@ -277,6 +281,20 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
                 CoffeDate date = dataSnapshot.getValue(CoffeDate.class);
                 ((CoffeDateAdapter)matchingList.getAdapter()).updateList(date);
                 Toast.makeText(SearchActivity.this,"Coffe Date Complete",Toast.LENGTH_LONG).show();
+                DatabaseReference myDatesReferemce = FirebaseDatabase.getInstance().getReference(USER_DATES_REFERENCE+"/"
+                +FirebaseAuth.getInstance().getCurrentUser().getUid()).child(date.getDataBaseReference());
+
+                myDatesReferemce.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        //JUST OK
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                       //maybe retry
+                    }
+                });
             }
 
             @Override
@@ -298,8 +316,10 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
 
     @Override
     public void OnChat(CoffeDate coffeDate) {
-
+        Bundle extras = new Bundle();
+        extras.putString(ChatActivity.KEY_COFFEDATE,coffeDate.getUser1());
         Intent chatIntent = new Intent(this,ChatActivity.class);
+        chatIntent.putExtras(extras);
         startActivity(chatIntent);
 
     }

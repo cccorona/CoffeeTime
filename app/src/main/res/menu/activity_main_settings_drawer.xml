@@ -3,7 +3,23 @@
 
 
     <item android:title="@string/settings">
+
         <menu>
+
+            <item
+                android:id="@+id/nav_chat"
+                android:icon="@drawable/ic_chat_black_24dp"
+                android:title="@string/chats" />
+            <item
+                android:id="@+id/nav_reviews"
+                android:icon="@drawable/ic_grade_black_36dp"
+                android:title="@string/my_reviews" />
+
+            <item
+                android:id="@+id/nav_dates"
+                android:icon="@drawable/ic_chat_black_24dp"
+                android:title="@string/my_dates" />
+
             <item
                 android:id="@+id/nav_about_us"
                 android:icon="@drawable/ic_menu_camera"
@@ -20,6 +36,8 @@
                 android:id="@+id/nav_q_a"
                 android:icon="@drawable/ic_menu_manage"
                 android:title="@string/q_a" />
+
+
         </menu>
     </item>
 

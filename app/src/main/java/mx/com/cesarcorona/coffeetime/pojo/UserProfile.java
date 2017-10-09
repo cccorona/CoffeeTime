@@ -11,6 +11,7 @@ public class UserProfile implements Serializable {
     private String email;
     private String name;
     private String age;
+    private String fotoUrl;
 
 
 
@@ -46,5 +47,14 @@ public class UserProfile implements Serializable {
 
     public void setAge(String age) {
         this.age = age;
+    }
+
+
+    public String getFotoUrl() {
+        return fotoUrl;
+    }
+
+    public void setFotoUrl(String fotoUrl) {
+        this.fotoUrl = fotoUrl;
     }
 }

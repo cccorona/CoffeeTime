@@ -71,7 +71,9 @@
             android:name=".activities.MainSettingsActivity"
             android:label="@string/title_activity_main_settings"
             android:theme="@style/AppTheme" />
-        <activity android:name=".activities.HistoryChatActivity"></activity>
+        <activity android:name=".activities.HistoryChatActivity" />
+        <activity android:name=".activities.ReviewsActivity" />
+        <activity android:name=".activities.MyDatesActivity"></activity>
     </application>
 
 </manifest>

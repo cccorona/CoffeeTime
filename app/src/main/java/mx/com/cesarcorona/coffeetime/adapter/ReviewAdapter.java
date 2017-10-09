@@ -6,7 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.LinkedList;
 
@@ -45,42 +48,25 @@ public class ReviewAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View rootView = LayoutInflater.from(context).inflate(R.layout.review_item_layout,parent,false);
+        View rootView = LayoutInflater.from(context).inflate(R.layout.review_item,parent,false);
         TextView coomentary = (TextView) rootView.findViewById(R.id.review_text);
+        RatingBar ratingBar  = (RatingBar)rootView.findViewById(R.id.rating);
+        ImageView foto = (ImageView)rootView.findViewById(R.id.foto_chat);
+        TextView reviewer = (TextView)rootView.findViewById(R.id.nombreChat);
+        TextView date = (TextView)rootView.findViewById(R.id.fecha_chat);
         coomentary.setText(reviews.get(position).getCommentary());
-
-        TextView reviewer = (TextView) rootView.findViewById(R.id.review_name);
-        reviewer.setText(reviews.get(position).getReviewer());
-
-        ImageView one = (ImageView) rootView.findViewById(R.id.one);
-        ImageView two = (ImageView) rootView.findViewById(R.id.two);
-        ImageView twee = (ImageView) rootView.findViewById(R.id.tree);
-        ImageView four = (ImageView) rootView.findViewById(R.id.four);
-        ImageView five = (ImageView) rootView.findViewById(R.id.five);
-
-
-        switch (reviews.get(position).getRateStars()){
-            case 1:
-                two.setVisibility(View.GONE);
-                twee.setVisibility(View.GONE);
-                four.setVisibility(View.GONE);
-                five.setVisibility(View.GONE);
-                break;
-            case 2:
-                twee.setVisibility(View.GONE);
-                four.setVisibility(View.GONE);
-                five.setVisibility(View.GONE);
-                break;
-            case 3:
-                four.setVisibility(View.GONE);
-                five.setVisibility(View.GONE);
-                break;
-            case 4:
-                five.setVisibility(View.GONE);
-                break;
-            case 5:
-                break;
+        ratingBar.setNumStars(5);
+        ratingBar.setMax(5);
+        ratingBar.setRating(reviews.get(position).getRateStars());
+        if(reviews.get(position).getReviewwerPhotoUrl() != null){
+            Picasso.with(context).load(reviews.get(position).getReviewwerPhotoUrl()).into(foto);
         }
+
+        reviewer.setText(reviews.get(position).getReviewer());
+        //date.setText(reviews.get(position).get);
+
+
+
 
 
         return rootView;

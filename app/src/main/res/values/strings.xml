@@ -50,6 +50,13 @@
     <string name="support">Support</string>
     <string name="q_a"><![CDATA[Q&A]]></string>
     <string name="enter_message">Please enter a message first!</string>
+    <string name="chats">Chats</string>
+    <string name="this_is_a_test_review_if_you_can_se_this_something_was_wrong_contact_to_contacto_cesarcorona_com_mx">This is a test review, if you can se this something was wrong contact to contacto@cesarcorona.com.mx</string>
+    <string name="my_reviews">My Reviews</string>
+    <string name="my_dates">My Dates</string>
+    <string name="connect">Connect</string>
+    <string name="rate_this_date">Rate this Date</string>
+    <string name="leave_your_comments">leave your comments</string>
 
 </resources>
 

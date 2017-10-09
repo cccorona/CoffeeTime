@@ -12,6 +12,7 @@ public class ReviewObject implements Serializable {
     private String reviewer;
     private String commentary;
     private int rateStars;
+    private String reviewwerPhotoUrl;
 
 
     public ReviewObject(String reviewer, String commentary, int rateStars) {
@@ -45,5 +46,14 @@ public class ReviewObject implements Serializable {
 
     public void setRateStars(int rateStars) {
         this.rateStars = rateStars;
+    }
+
+
+    public String getReviewwerPhotoUrl() {
+        return reviewwerPhotoUrl;
+    }
+
+    public void setReviewwerPhotoUrl(String reviewwerPhotoUrl) {
+        this.reviewwerPhotoUrl = reviewwerPhotoUrl;
     }
 }

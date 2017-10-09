@@ -51,7 +51,7 @@ public class ReviewActivity extends BaseAnimatedActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review);
-        reviewsList = (ListView) findViewById(R.id.review_list);
+        reviewsList = (ListView) findViewById(R.id.list);
         homeIcon = (ImageView)findViewById(R.id.home_icon);
         lienarButton = (LinearLayout) findViewById(R.id.linear_back_button);
         userName = (TextView) findViewById(R.id.user_name_reviews);

@@ -15,10 +15,10 @@ import mx.com.cesarcorona.coffeetime.R;
 import mx.com.cesarcorona.coffeetime.pojo.CoffeDate;
 
 /**
- * Created by ccabrera on 29/08/17.
+ * Created by ccabrera on 08/10/17.
  */
 
-public class CoffeDateAdapter extends BaseAdapter {
+public class MyDatesAdapter extends BaseAdapter {
 
 
     private Context context;
@@ -36,7 +36,7 @@ public class CoffeDateAdapter extends BaseAdapter {
         void OnChat(CoffeDate coffeDate);
     }
 
-    public CoffeDateAdapter(Context context, LinkedList<CoffeDate> availableDates) {
+    public MyDatesAdapter(Context context, LinkedList<CoffeDate> availableDates) {
         this.context = context;
         this.availableDates = availableDates;
         this.matchingInterface = (MatchingInterface) context;
@@ -90,14 +90,21 @@ public class CoffeDateAdapter extends BaseAdapter {
             }
         });
 
-        if(availableDates.get(position).getOpenDate()){
-            chatButton.setVisibility(View.GONE);
-        }else{
-            chatButton.setVisibility(View.VISIBLE);
-        }
+        connectButon.setText(R.string.rate_this_date);
 
         TextView personName = (TextView) rootView.findViewById(R.id.person_name);
         personName.setText(availableDates.get(position).getProfile1().getName());
+
+        connectButon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(matchingInterface != null){
+                    matchingInterface.OnReview(availableDates.get(position));
+                }
+            }
+        });
+
+
 
         return rootView;
     }
