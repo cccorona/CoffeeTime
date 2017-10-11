@@ -90,6 +90,8 @@ public class MyDatesAdapter extends BaseAdapter {
             }
         });
 
+        chatButton.setVisibility(View.VISIBLE);
+
         connectButon.setText(R.string.rate_this_date);
 
         TextView personName = (TextView) rootView.findViewById(R.id.person_name);

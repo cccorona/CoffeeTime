@@ -276,17 +276,33 @@ public class MealSearchActivity extends BaseAnimatedActivity implements CoffeDat
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                CoffeDate date = dataSnapshot.getValue(CoffeDate.class);
+                final CoffeDate date = dataSnapshot.getValue(CoffeDate.class);
                 date.setDataBaseReference(dataSnapshot.getKey());
                 ((CoffeDateAdapter)matchingList.getAdapter()).updateList(date);
-                Toast.makeText(MealSearchActivity.this,"Coffe Date Complete",Toast.LENGTH_LONG).show();
                 DatabaseReference myDatesReferemce = FirebaseDatabase.getInstance().getReference(USER_DATES_REFERENCE+"/"
                         +date.getUser1()).child(date.getDataBaseReference());
-                databaseReference.setValue(date);
+                myDatesReferemce.setValue(date);
 
                 myDatesReferemce.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        DatabaseReference myDatesReferemce2 = FirebaseDatabase.getInstance().getReference(USER_DATES_REFERENCE+"/"
+                                +date.getUser2()).child(date.getDataBaseReference());
+                        myDatesReferemce2.setValue(date);
+
+                        myDatesReferemce2.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Toast.makeText(MealSearchActivity.this,"Coffe Date Complete",Toast.LENGTH_LONG).show();
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                //maybe retry
+                            }
+                        });
                         //JUST OK
                     }
 
@@ -296,21 +312,7 @@ public class MealSearchActivity extends BaseAnimatedActivity implements CoffeDat
                     }
                 });
 
-                DatabaseReference myDatesReferemce2 = FirebaseDatabase.getInstance().getReference(USER_DATES_REFERENCE+"/"
-                        +date.getUser2()).child(date.getDataBaseReference());
-                myDatesReferemce2.setValue(date);
 
-                myDatesReferemce2.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        //JUST OK
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        //maybe retry
-                    }
-                });
 
             }
 
@@ -334,7 +336,15 @@ public class MealSearchActivity extends BaseAnimatedActivity implements CoffeDat
     @Override
     public void OnChat(CoffeDate coffeDate) {
         Bundle extras = new Bundle();
-        extras.putString(ChatActivity.KEY_COFFEDATE,coffeDate.getUser1());
+        String wichUser = "";
+        if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(coffeDate.getUser1())){
+            wichUser = coffeDate.getUser2();
+        }else{
+            wichUser = coffeDate.getUser1();
+        }
+        extras.putString(ChatActivity.KEY_COFFEDATE,wichUser);
+        extras.putString(ChatActivity.KEY_COFFEDATE_USER1,coffeDate.getUser1());
+        extras.putString(ChatActivity.KEY_COFFEDATE_USER2,coffeDate.getUser2());
         Intent chatIntent = new Intent(this,ChatActivity.class);
         chatIntent.putExtras(extras);
         startActivity(chatIntent);

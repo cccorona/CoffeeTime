@@ -158,6 +158,20 @@ public class MyDatesActivity extends BaseAnimatedActivity implements MyDatesAdap
     @Override
     public void OnChat(CoffeDate coffeDate) {
 
+        Bundle extras = new Bundle();
+        String wichUser = "";
+        if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(coffeDate.getUser1())){
+            wichUser = coffeDate.getUser2();
+        }else{
+            wichUser = coffeDate.getUser1();
+        }
+        extras.putString(ChatActivity.KEY_COFFEDATE,wichUser);
+        extras.putString(ChatActivity.KEY_COFFEDATE_USER1,coffeDate.getUser1());
+        extras.putString(ChatActivity.KEY_COFFEDATE_USER2,coffeDate.getUser2());
+        Intent chatIntent = new Intent(this,ChatActivity.class);
+        chatIntent.putExtras(extras);
+        startActivity(chatIntent);
+
     }
 
     private void showpDialog() {
@@ -172,11 +186,18 @@ public class MyDatesActivity extends BaseAnimatedActivity implements MyDatesAdap
 
 
     private void generateMatchingCards(){
-
+        String myUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         for(CoffeDate coffeDate:availableDates){
             coffeDate.setFillInformationInterface(this);
-            coffeDate.fullFillUserProfileWithReference(CoffeTimeActiviy.USER_PROFILES_REFERENCE +"/" +coffeDate.getUser1() );
+            String wichUser = "";
+
+            if(myUser.equals(coffeDate.getUser1())){
+                wichUser = coffeDate.getUser2();
+            }else{
+                wichUser = coffeDate.getUser1();
+            }
+            coffeDate.fullFillUserProfileWithReference(CoffeTimeActiviy.USER_PROFILES_REFERENCE +"/" +wichUser);
         }
 
     }

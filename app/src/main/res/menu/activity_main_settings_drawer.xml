@@ -39,7 +39,7 @@
             <item
                 android:id="@+id/nav_log_out"
                 android:icon="@drawable/ic_exit_to_app_black_36dp"
-                android:title="@string/q_a" />
+                android:title="@string/logout" />
 
 
         </menu>

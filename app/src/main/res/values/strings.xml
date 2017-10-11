@@ -61,6 +61,7 @@
     <string name="gps_network_not_enabled">Your network is not enabled</string>
     <string name="open_location_settings">Turn your location </string>
     <string name="Cancel">Action canceled</string>
+    <string name="logout">Logout</string>
 
 </resources>
 

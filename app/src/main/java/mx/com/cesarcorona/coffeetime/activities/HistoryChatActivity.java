@@ -51,10 +51,15 @@ public class HistoryChatActivity extends BaseAnimatedActivity implements ChatHis
     @Override
     public void OnChatSelected(ChatHistoryElement chatRoom) {
 
-        Intent chatsIntent = new Intent(HistoryChatActivity.this,ChatActivity.class);
+
+
         Bundle extras = new Bundle();
-        extras.putString(KEY_COFFEDATE,chatRoom.getUserChatWith());
-        chatsIntent.putExtras(extras);
-        startActivity(chatsIntent);
+        extras.putString(ChatActivity.KEY_COFFEDATE,chatRoom.getUserChatWith());
+        extras.putString(ChatActivity.KEY_COFFEDATE_USER1,user.getUid());
+        extras.putString(ChatActivity.KEY_COFFEDATE_USER2,chatRoom.getUserChatWith());
+        Intent chatIntent = new Intent(this,ChatActivity.class);
+        chatIntent.putExtras(extras);
+        startActivity(chatIntent);
+
     }
 }
