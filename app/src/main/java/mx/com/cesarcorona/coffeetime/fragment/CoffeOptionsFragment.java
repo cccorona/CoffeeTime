@@ -38,6 +38,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.appolica.flubber.Flubber;
+import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
@@ -70,6 +71,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import mx.com.cesarcorona.coffeetime.R;
 import mx.com.cesarcorona.coffeetime.activities.CoffeTimeActiviy;
 import mx.com.cesarcorona.coffeetime.activities.FilterActivity;
@@ -765,6 +770,7 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
         //longitud = currentLocation.getLongitude();
         if(justCoffe){
             justCoffeSEarch();
+
         }
     }
 
@@ -779,6 +785,7 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
         longitud = currentLocation.getLongitude();
         if(justCoffe){
             justCoffeSEarch();
+
         }
 
 

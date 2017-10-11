@@ -1,14 +1,21 @@
 package mx.com.cesarcorona.coffeetime.activities;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -36,8 +43,16 @@ import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragmen
 import com.google.android.gms.maps.GoogleMap;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -46,6 +61,8 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import mx.com.cesarcorona.coffeetime.MainActivity;
@@ -58,6 +75,7 @@ import mx.com.cesarcorona.coffeetime.pojo.Categoria;
 import mx.com.cesarcorona.coffeetime.pojo.Topic;
 import mx.com.cesarcorona.coffeetime.pojo.User;
 import mx.com.cesarcorona.coffeetime.pojo.UserProfile;
+import mx.com.cesarcorona.coffeetime.pojo.WebUrlsPojo;
 
 import static mx.com.cesarcorona.coffeetime.services.MyFirebaseInstanceIDService.KEY_TOKEN;
 import static mx.com.cesarcorona.coffeetime.services.MyFirebaseInstanceIDService.PREFERENCES_KEY;
@@ -71,6 +89,8 @@ public class MainSettingsActivity extends BaseAnimatedActivity
 
     private  NavigationView navigationView;
     public static String USER_PROFILES_REFERENCE = "profiles";
+    public static String URLS_DRAWER_REFERENCE = "drawer";
+
     public static String TAG = MainSettingsActivity.class.getSimpleName();
 
     private CardView cooffee, merienda;
@@ -84,6 +104,8 @@ public class MainSettingsActivity extends BaseAnimatedActivity
     private ImageView newForkPLace;
     private TextView optionName;
     private ImageView homeBarIcon;
+
+    private WebUrlsPojo urlsDrawer;
 
 
 
@@ -108,6 +130,8 @@ public class MainSettingsActivity extends BaseAnimatedActivity
     private List<noman.googleplaces.Place> historicPlaces;
     private Topic topicSeleccionado;
 
+    private boolean gps_enabled,network_enabled;
+
 
 
 
@@ -119,6 +143,9 @@ public class MainSettingsActivity extends BaseAnimatedActivity
         setSupportActionBar(toolbar);
         toolbar.setTitle("");
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        pDialog = new ProgressDialog(this);
+        pDialog.setMessage(getResources().getString(R.string.please_wait_d));
+        pDialog.setCancelable(false);
 
 
 
@@ -226,6 +253,13 @@ public class MainSettingsActivity extends BaseAnimatedActivity
 
         initUserData();
         setUpProfileDrawerMenu();
+        fillDrawerUrl();
+
+
+
+
+        checkGps();
+
 
 
     }
@@ -269,12 +303,15 @@ public class MainSettingsActivity extends BaseAnimatedActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_about_us) {
-            // Handle the camera action
+            openBrowser(id);
         } else if (id == R.id.nav_contact_us) {
+            openBrowser(id);
 
         } else if (id == R.id.nav_support) {
+            openBrowser(id);
 
         } else if (id == R.id.nav_q_a) {
+            openBrowser(id);
 
         }else if(id == R.id.nav_chat){
             Intent chatIntent = new Intent(MainSettingsActivity.this,HistoryChatActivity.class);
@@ -288,6 +325,8 @@ public class MainSettingsActivity extends BaseAnimatedActivity
         }else if(id == R.id.nav_dates){
             Intent myDatesIntent = new Intent(MainSettingsActivity.this,MyDatesActivity.class);
             startActivity(myDatesIntent);
+        }else if(id == R.id.nav_log_out){
+            exit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -301,11 +340,18 @@ public class MainSettingsActivity extends BaseAnimatedActivity
 
         TextView nombrePerfil = (TextView)navigationView.getHeaderView(0).findViewById(R.id.text_view_nombre);
         TextView correoPerfil = (TextView)navigationView.getHeaderView(0).findViewById(R.id.textView_correo_suaurio);
+        ImageView profileFoto = (ImageView)navigationView.getHeaderView(0).findViewById(R.id.imageView);
+
+
 
         FirebaseUser currentUser= FirebaseAuth.getInstance().getCurrentUser();
 
         nombrePerfil.setText(currentUser.getDisplayName());
         correoPerfil.setText(currentUser.getEmail());
+
+        if(currentUser.getPhotoUrl() != null){
+            Picasso.with(MainSettingsActivity.this).load(currentUser.getPhotoUrl()).into(profileFoto);
+        }
 
 
     }
@@ -481,6 +527,164 @@ public class MainSettingsActivity extends BaseAnimatedActivity
     @Override
     public void OnFirstOptionSelected() {
         cooffee.setVisibility(View.GONE);
+    }
+
+
+
+
+    private void checkGps(){
+        LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        try {
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        }catch (Exception ex){}
+        try{
+            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        }catch (Exception ex){}
+        if(!gps_enabled && !network_enabled){
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setMessage(getResources().getString(R.string.gps_network_not_enabled));
+            dialog.setPositiveButton(getResources().getString(R.string.open_location_settings), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    Intent myIntent = new Intent( Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(myIntent);
+                }
+            });
+            dialog.setNegativeButton(getString(R.string.Cancel), new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    // TODO Auto-generated method stub
+
+                }
+            });
+            dialog.show();
+        }
+    }
+
+
+    private void fillDrawerUrl(){
+        DatabaseReference drawerReferemce = FirebaseDatabase.getInstance().getReference(URLS_DRAWER_REFERENCE);
+        drawerReferemce.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot url:dataSnapshot.getChildren()){
+                    urlsDrawer = url.getValue(WebUrlsPojo.class);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+    private void openBrowser(final int id ){
+
+        if(urlsDrawer == null){
+            DatabaseReference drawerReferemce = FirebaseDatabase.getInstance().getReference(URLS_DRAWER_REFERENCE);
+            drawerReferemce.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for(DataSnapshot url:dataSnapshot.getChildren()){
+                        urlsDrawer = url.getValue(WebUrlsPojo.class);
+                    }
+                    if (id == R.id.nav_about_us) {
+                        Intent i = new Intent(Intent.ACTION_VIEW);
+                        i.setData(Uri.parse( urlsDrawer.getUrlAboutUs()));
+                        startActivity(i);
+
+                    } else if (id == R.id.nav_contact_us) {
+                        Intent i = new Intent(Intent.ACTION_VIEW);
+                        i.setData(Uri.parse( urlsDrawer.getContactUS()));
+                        startActivity(i);
+
+                    } else if (id == R.id.nav_support) {
+                        Intent i = new Intent(Intent.ACTION_VIEW);
+                        i.setData(Uri.parse( urlsDrawer.getSupport()));
+                        startActivity(i);
+
+                    } else if (id == R.id.nav_q_a) {
+                        Intent i = new Intent(Intent.ACTION_VIEW);
+                        i.setData(Uri.parse( urlsDrawer.getQa()));
+                        startActivity(i);
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }else{
+            if (id == R.id.nav_about_us) {
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse( urlsDrawer.getUrlAboutUs()));
+                startActivity(i);
+
+            } else if (id == R.id.nav_contact_us) {
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse( urlsDrawer.getContactUS()));
+                startActivity(i);
+
+            } else if (id == R.id.nav_support) {
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse( urlsDrawer.getSupport()));
+                startActivity(i);
+
+            } else if (id == R.id.nav_q_a) {
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse( urlsDrawer.getQa()));
+                startActivity(i);
+
+            }
+        }
+
+
+
+    }
+
+
+
+    private void exit(){
+        showpDialog();
+        FirebaseAuth.getInstance().signOut();
+
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                Thread.currentThread()
+                        .setName(this.getClass().getSimpleName() + ": " + Thread.currentThread().getName());
+                hidepDialog();
+                Intent logoutIntent = new Intent(MainSettingsActivity.this,SplashActivity.class);
+                startActivity(logoutIntent);
+                finish();
+
+
+
+
+            }
+        };
+
+        Timer timer = new Timer();
+        timer.schedule(task, 2000);
+
+
+
+    }
+
+
+    private void showpDialog() {
+        if (!pDialog.isShowing())
+            pDialog.show();
+    }
+
+    private void hidepDialog() {
+        if (pDialog.isShowing())
+            pDialog.dismiss();
     }
 
 

@@ -103,12 +103,15 @@ public class CoffeDateAdapter extends BaseAdapter {
     }
 
     public void updateList(CoffeDate coffeDate){
+        int pos = 0;
         for(CoffeDate datoToUpdate:availableDates){
             if(datoToUpdate.getDataBaseReference().equalsIgnoreCase(coffeDate.getDataBaseReference())){
-                datoToUpdate = coffeDate;
+                availableDates.get(pos).setOpenDate(false);
                 break;
             }
+            pos++;
         }
+
 
         notifyDataSetChanged();
     }

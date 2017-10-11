@@ -1,5 +1,6 @@
 package mx.com.cesarcorona.coffeetime.activities;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -14,6 +15,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -21,10 +23,16 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -96,6 +104,28 @@ public class SplashActivity extends BaseAnimatedActivity {
         timer.schedule(task, SPLASH_SCREEN_DELAY);
 
 
+        Dexter.withActivity(this)
+                .withPermissions(
+                        Manifest.permission.ACCESS_NETWORK_STATE,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION
+                ).withListener(new MultiplePermissionsListener() {
+            @Override
+            public void onPermissionsChecked(MultiplePermissionsReport report) {
+                if(!report.areAllPermissionsGranted()){
+                    Toast.makeText(SplashActivity.this,"",Toast.LENGTH_LONG).show();
+                }
+
+
+            }
+
+            @Override
+            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+
+            }
+        }).check();
+
+
 
     } // Fin onCreate()
 
@@ -118,7 +148,7 @@ public class SplashActivity extends BaseAnimatedActivity {
                         //.setPrivacyPolicyUrl(getString(R.string.tos_url))
                         .setIsSmartLockEnabled(!DEBUG)
                         .setTheme(R.style.LoginTheme)
-                        .setLogo(R.drawable.coffe_logo)
+                        .setLogo(R.drawable.logo_coffe_time)
 
                         .build(),
                 RC_SIGN_IN);

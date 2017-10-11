@@ -272,17 +272,19 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
     @Override
     public void OnConnectButton(CoffeDate coffeDate) {
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(DATA_BASE_PATH+"/"+coffeDate.getDataBaseReference());
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(DATA_BASE_PATH+"/"+coffeDate.getDataBaseReference());
         databaseReference.child("user2").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
         databaseReference.child("openDate").setValue(false);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 CoffeDate date = dataSnapshot.getValue(CoffeDate.class);
+                date.setDataBaseReference(dataSnapshot.getKey());
                 ((CoffeDateAdapter)matchingList.getAdapter()).updateList(date);
                 Toast.makeText(SearchActivity.this,"Coffe Date Complete",Toast.LENGTH_LONG).show();
                 DatabaseReference myDatesReferemce = FirebaseDatabase.getInstance().getReference(USER_DATES_REFERENCE+"/"
-                +FirebaseAuth.getInstance().getCurrentUser().getUid()).child(date.getDataBaseReference());
+                +date.getUser1()).child(date.getDataBaseReference());
+                databaseReference.setValue(date);
 
                 myDatesReferemce.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -295,6 +297,23 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
                        //maybe retry
                     }
                 });
+
+                DatabaseReference myDatesReferemce2 = FirebaseDatabase.getInstance().getReference(USER_DATES_REFERENCE+"/"
+                        +date.getUser2()).child(date.getDataBaseReference());
+                myDatesReferemce2.setValue(date);
+
+                myDatesReferemce2.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        //JUST OK
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        //maybe retry
+                    }
+                });
+
             }
 
             @Override

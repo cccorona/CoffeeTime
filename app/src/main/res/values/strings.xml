@@ -58,6 +58,9 @@
     <string name="rate_this_date">Rate this Date</string>
     <string name="leave_your_comments">leave your comments</string>
     <string name="set_your_prefered_meal">SET YOUR \nPREFERED MEAL</string>
+    <string name="gps_network_not_enabled">Your network is not enabled</string>
+    <string name="open_location_settings">Turn your location </string>
+    <string name="Cancel">Action canceled</string>
 
 </resources>
 

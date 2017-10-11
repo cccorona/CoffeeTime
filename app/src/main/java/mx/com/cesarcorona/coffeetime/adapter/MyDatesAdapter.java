@@ -99,7 +99,7 @@ public class MyDatesAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 if(matchingInterface != null){
-                    matchingInterface.OnReview(availableDates.get(position));
+                    matchingInterface.OnConnectButton(availableDates.get(position));
                 }
             }
         });

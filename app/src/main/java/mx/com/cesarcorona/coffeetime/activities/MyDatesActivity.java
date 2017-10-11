@@ -30,7 +30,7 @@ import mx.com.cesarcorona.coffeetime.pojo.UserProfile;
 
 import static mx.com.cesarcorona.coffeetime.activities.JustCoffeActivity.USER_PROFILES_REFERENCE;
 
-public class MyDatesActivity extends BaseAnimatedActivity implements MyDatesAdapter.MatchingInterface {
+public class MyDatesActivity extends BaseAnimatedActivity implements MyDatesAdapter.MatchingInterface, CoffeDate.FillInformationInterface {
 
 
     public static String TAG = SearchActivity.class.getSimpleName();
@@ -45,6 +45,10 @@ public class MyDatesActivity extends BaseAnimatedActivity implements MyDatesAdap
     private ListView myDatesList;
     private LinearLayout lienarButton;
     private ImageView homeIcon;
+
+
+    private int numberOfSrikes;
+    private int numberErrors;
 
 
 
@@ -70,7 +74,7 @@ public class MyDatesActivity extends BaseAnimatedActivity implements MyDatesAdap
         availableDates = new LinkedList<>();
         myDatesList = (ListView) findViewById(R.id.list);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference(DATES_REFERENCE + "/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+        databaseReference = FirebaseDatabase.getInstance().getReference(USER_DATES_REFERENCE + "/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -80,9 +84,13 @@ public class MyDatesActivity extends BaseAnimatedActivity implements MyDatesAdap
                     availableDates.add(object);
                 }
 
-                myDatesAdapter = new MyDatesAdapter(MyDatesActivity.this,availableDates);
+                generateMatchingCards();
+
+
+
+               /* myDatesAdapter = new MyDatesAdapter(MyDatesActivity.this,availableDates);
                 myDatesAdapter.setMatchingInterface(MyDatesActivity.this);
-                myDatesList.setAdapter(myDatesAdapter);
+                myDatesList.setAdapter(myDatesAdapter);*/
 
                 hidepDialog();
 
@@ -120,16 +128,30 @@ public class MyDatesActivity extends BaseAnimatedActivity implements MyDatesAdap
     @Override
     public void OnConnectButton(CoffeDate coffeDate) {
 
-    }
-
-    @Override
-    public void OnReview(CoffeDate coffeDate) {
-
         Bundle arguments = new Bundle();
         arguments.putSerializable(FullScreenDialog.KEY_DATE,coffeDate);
         FullScreenDialog rateDialog = new FullScreenDialog();
         rateDialog.setArguments(arguments);
         rateDialog.show(getSupportFragmentManager(),FullScreenDialog.TAG);
+
+    }
+
+    @Override
+    public void OnReview(CoffeDate coffeDate) {
+
+        Intent intent= new Intent(MyDatesActivity.this, ReviewActivity.class);
+        Bundle extras = new Bundle();
+        String wichUser ="";
+        if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(coffeDate.getUser1())){
+            wichUser = coffeDate.getUser2();
+        }else{
+            wichUser = coffeDate.getUser1();
+        }
+
+        extras.putString(ReviewActivity.KEY_USER,wichUser);
+        intent.putExtras(extras);
+        startActivity(intent);
+
 
     }
 
@@ -148,4 +170,41 @@ public class MyDatesActivity extends BaseAnimatedActivity implements MyDatesAdap
             pDialog.dismiss();
     }
 
+
+    private void generateMatchingCards(){
+
+
+        for(CoffeDate coffeDate:availableDates){
+            coffeDate.setFillInformationInterface(this);
+            coffeDate.fullFillUserProfileWithReference(CoffeTimeActiviy.USER_PROFILES_REFERENCE +"/" +coffeDate.getUser1() );
+        }
+
+    }
+
+    @Override
+    public void OnDataChangeSuccess() {
+
+        numberOfSrikes++;
+        if(numberOfSrikes == availableDates.size() && numberErrors == 0){
+            //finisFill all user profiles
+            myDatesAdapter = new MyDatesAdapter(MyDatesActivity.this,availableDates);
+            myDatesAdapter.setMatchingInterface(MyDatesActivity.this);
+            myDatesList.setAdapter(myDatesAdapter);
+
+            //  hidepDialog();
+
+
+        }else {
+            // hidepDialog();
+
+            //Show error
+        }
+
+    }
+
+    @Override
+    public void OnError(String error) {
+        numberErrors ++ ;
+
+    }
 }

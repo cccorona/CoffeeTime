@@ -67,6 +67,8 @@ dependencies {
     compile 'com.appolica:flubber:1.0.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.github.pwittchen:reactivenetwork-rx2:0.12.1'
+    compile 'com.karumi:dexter:4.1.0'
+
 
     testCompile 'junit:junit:4.12'
 }
