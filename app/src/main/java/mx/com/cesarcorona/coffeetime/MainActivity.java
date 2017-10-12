@@ -142,10 +142,10 @@ public class MainActivity extends AppCompatActivity implements   DatePickerDialo
                 coffeOptionsFragment = (CoffeOptionsFragment) getSupportFragmentManager().findFragmentByTag(CoffeOptionsFragment.TAG);
                 if(coffeOptionsFragment == null){
                     coffeOptionsFragment = new CoffeOptionsFragment();
-                    getSupportFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_from_down,0)
+                    getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_from_down,0)
                             .add(R.id.fragment_selected_time,coffeOptionsFragment,CoffeOptionsFragment.TAG).commit();
                 }else {
-                    getSupportFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_from_right, 0)
+                    getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_from_right, 0)
                             .replace(R.id.fragment_selected_time, coffeOptionsFragment).commit();
                 }
             }

@@ -39,7 +39,7 @@ public class BaseAnimatedActivity extends AppCompatActivity {
      * Overrides the pending Activity transition by performing the "Enter" animation.
      */
     protected void overridePendingTransitionEnter() {
-        overridePendingTransition(R.animator.slide_from_right, R.animator.slide_to_left);
+        overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
 
     }
 
@@ -47,7 +47,7 @@ public class BaseAnimatedActivity extends AppCompatActivity {
      * Overrides the pending Activity transition by performing the "Exit" animation.
      */
     protected void overridePendingTransitionExit() {
-        overridePendingTransition(R.animator.slide_from_left, R.animator.slide_to_right);
+        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
 
     }
 
