@@ -56,7 +56,8 @@
         android:layout_margin="10dp"
         style="?android:attr/ratingBarStyle"
         android:numStars="5"
-        android:stepSize="0.1"
+        android:max="5"
+        android:stepSize="1"
         android:isIndicator="false"
         android:layout_height="wrap_content" />
 

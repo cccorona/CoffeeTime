@@ -108,7 +108,7 @@ public class FullScreenDialog extends DialogFragment implements CoffeDate.FillIn
 
                 if(reviewText.getText().toString().length()>0 && rate.getNumStars() >0){
                     reviewObject.setCommentary(reviewText.getText().toString());
-                    reviewObject.setRateStars(rate.getNumStars());
+                    reviewObject.setRateStars((int)rate.getRating());
                     if(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl() != null){
                         reviewObject.setReviewwerPhotoUrl(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString());
                     }
@@ -118,7 +118,7 @@ public class FullScreenDialog extends DialogFragment implements CoffeDate.FillIn
                     showpDialog();
 
                     String reviewUser ="";
-                    if(FirebaseAuth.getInstance().getCurrentUser().equals(dateToReview.getUser1())){
+                    if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(dateToReview.getUser1())){
                         reviewUser = dateToReview.getUser2();
                     }else{
                         reviewUser = dateToReview.getUser1();
@@ -129,6 +129,7 @@ public class FullScreenDialog extends DialogFragment implements CoffeDate.FillIn
                        @Override
                        public void onComplete(@NonNull Task<Void> task) {
                            hidepDialog();
+                           getDialog().dismiss();
                        }
                    });
 
@@ -151,7 +152,7 @@ public class FullScreenDialog extends DialogFragment implements CoffeDate.FillIn
         dateToReview= (CoffeDate) getArguments().getSerializable(KEY_DATE);
         dateToReview.setFillInformationInterface(FullScreenDialog.this);
         String wichUser ="";
-        if(FirebaseAuth.getInstance().getCurrentUser().equals(dateToReview.getUser1())){
+        if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(dateToReview.getUser1())){
             wichUser = dateToReview.getUser2();
         }else{
             wichUser = dateToReview.getUser1();
