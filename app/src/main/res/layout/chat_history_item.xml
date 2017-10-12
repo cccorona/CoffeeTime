@@ -9,7 +9,7 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/foto_chat"
-        android:src="@drawable/coffe_logo"
+        android:src="@drawable/logo_coffe_time"
         android:layout_gravity="center"
         android:layout_margin="20dp"
         android:layout_width="40dp"

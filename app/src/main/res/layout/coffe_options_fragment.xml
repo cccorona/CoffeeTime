@@ -488,7 +488,7 @@
 
                 <ImageView
                     android:layout_centerInParent="true"
-                    android:background="@drawable/coffe_logo"
+                    android:background="@drawable/logo_coffe_time"
                     android:layout_width="50dp"
                     android:layout_height="50dp" />
 

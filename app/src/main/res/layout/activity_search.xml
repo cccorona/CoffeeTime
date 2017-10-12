@@ -106,7 +106,7 @@
 
             <ImageView
                 android:id="@+id/animated_logo"
-                android:src="@drawable/coffe_logo"
+                android:src="@drawable/logo_coffe_time"
                 android:layout_gravity="center"
                 android:layout_width="200dp"
                 android:layout_height="200dp" />
