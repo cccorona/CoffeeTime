@@ -101,6 +101,7 @@
 
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:id="@+id/linear_background_meal"
                     android:background="@drawable/mealspart"
                     android:orientation="vertical"

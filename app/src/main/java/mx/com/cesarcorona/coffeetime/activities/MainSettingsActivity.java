@@ -68,6 +68,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import mx.com.cesarcorona.coffeetime.MainActivity;
 import mx.com.cesarcorona.coffeetime.R;
 import mx.com.cesarcorona.coffeetime.adapter.CategoryAdapter;
+import mx.com.cesarcorona.coffeetime.dialogs.TimeSelectorDialog;
 import mx.com.cesarcorona.coffeetime.fragment.CoffeOptionsFragment;
 import mx.com.cesarcorona.coffeetime.fragment.MealOptionsFragment;
 import mx.com.cesarcorona.coffeetime.fragment.WorkaroundMapFragment;
@@ -83,7 +84,7 @@ import static mx.com.cesarcorona.coffeetime.services.MyFirebaseInstanceIDService
 
 public class MainSettingsActivity extends BaseAnimatedActivity
         implements NavigationView.OnNavigationItemSelectedListener,DatePickerDialog.OnDateSetListener ,
-        TimePickerDialog.OnTimeSetListener ,CoffeOptionsFragment.OnActionSelectedListener  {
+        TimePickerDialog.OnTimeSetListener ,CoffeOptionsFragment.OnActionSelectedListener,TimeSelectorDialog.OnTimeSelectedInterface {
 
 
 
@@ -216,15 +217,7 @@ public class MainSettingsActivity extends BaseAnimatedActivity
         cooffee.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                coffeOptionsFragment = (CoffeOptionsFragment) getSupportFragmentManager().findFragmentByTag(CoffeOptionsFragment.TAG);
-                if(coffeOptionsFragment == null){
-                    coffeOptionsFragment = new CoffeOptionsFragment();
-                    getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_from_down,0)
-                            .add(R.id.fragment_selected_time,coffeOptionsFragment,CoffeOptionsFragment.TAG).commit();
-                }else {
-                    getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_from_right, 0)
-                            .replace(R.id.fragment_selected_time, coffeOptionsFragment).commit();
-                }
+
             }
         });
 
@@ -232,20 +225,7 @@ public class MainSettingsActivity extends BaseAnimatedActivity
         merienda.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                backgroundCoffe.setBackgroundResource(R.drawable.mealspart);
-                changeLogo.setBackgroundResource(R.drawable.big_white_circle);
-                changeLogo.setImageResource(R.color.fui_transparent);
-                newForkPLace.setImageResource(R.drawable.fork);
-                optionName.setText(getString(R.string.merienda));
-                mealOptionsFragment = (MealOptionsFragment) getSupportFragmentManager().findFragmentByTag(MealOptionsFragment.TAG);
-                if(mealOptionsFragment == null){
-                    mealOptionsFragment = new MealOptionsFragment();
-                    getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_from_down,0)
-                            .add(R.id.fragment_selected_time,mealOptionsFragment,MealOptionsFragment.TAG).commit();
-                }else {
-                    getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_from_right, 0)
-                            .replace(R.id.fragment_selected_time, mealOptionsFragment).commit();
-                }
+
 
 
             }
@@ -254,15 +234,44 @@ public class MainSettingsActivity extends BaseAnimatedActivity
         initUserData();
         setUpProfileDrawerMenu();
         fillDrawerUrl();
-
-
-
-
+        initCoffeFragment();
         checkGps();
 
 
 
     }
+
+
+    private void initCoffeFragment(){
+        coffeOptionsFragment = (CoffeOptionsFragment) getSupportFragmentManager().findFragmentByTag(CoffeOptionsFragment.TAG);
+        if(coffeOptionsFragment == null){
+            coffeOptionsFragment = new CoffeOptionsFragment();
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_from_down,0)
+                    .add(R.id.fragment_selected_time,coffeOptionsFragment,CoffeOptionsFragment.TAG).commit();
+        }else {
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_from_right, 0)
+                    .replace(R.id.fragment_selected_time, coffeOptionsFragment).commit();
+        }
+    }
+
+    //Four use later, meal activate
+    private void initMealFragmen(){
+        backgroundCoffe.setBackgroundResource(R.drawable.mealspart);
+        changeLogo.setBackgroundResource(R.drawable.big_white_circle);
+        changeLogo.setImageResource(R.color.fui_transparent);
+        newForkPLace.setImageResource(R.drawable.fork);
+        optionName.setText(getString(R.string.merienda));
+        mealOptionsFragment = (MealOptionsFragment) getSupportFragmentManager().findFragmentByTag(MealOptionsFragment.TAG);
+        if(mealOptionsFragment == null){
+            mealOptionsFragment = new MealOptionsFragment();
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_from_down,0)
+                    .add(R.id.fragment_selected_time,mealOptionsFragment,MealOptionsFragment.TAG).commit();
+        }else {
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_from_right, 0)
+                    .replace(R.id.fragment_selected_time, mealOptionsFragment).commit();
+        }
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -688,5 +697,82 @@ public class MainSettingsActivity extends BaseAnimatedActivity
     }
 
 
+    @Override
+    public void OnTimeChangedDialog(TimePicker view, int hourOfDay, int minute) {
+        Calendar rightNow = Calendar.getInstance();
+        Date now =Calendar.getInstance().getTime();
+        int hourNow = rightNow.get(Calendar.HOUR_OF_DAY);
+        boolean isPassedTime = false;
+        if(hourNow>hourOfDay){
+            isPassedTime = true;
+        }
+        String aMpM = "AM";
+        if(hourOfDay >11)
+        {
+            aMpM = "PM";
+        }
+        //Make the 24 hour time format to 12 hour time format
+        int currentHour;
+        if(hourOfDay>11)
+        {
+            currentHour = hourOfDay - 12;
+        }
+        else
+        {
+            currentHour = hourOfDay;
+        }
+        coffeOptionsFragment = (CoffeOptionsFragment) getSupportFragmentManager().findFragmentByTag(CoffeOptionsFragment.TAG);
+        mealOptionsFragment = (MealOptionsFragment)getSupportFragmentManager().findFragmentByTag(MealOptionsFragment.TAG);
 
+
+        if(fechaEnCalendario == null || "".equals(fechaEnCalendario)){
+            Toast.makeText(this,"First set Date before time",Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if(fechaEnCalendario.equals(now)){
+            if(isPassedTime){
+                Toast.makeText(this,"You have to select a future hour",Toast.LENGTH_LONG).show();
+
+            }else{
+                timeSelected = String.valueOf(currentHour)
+                        + " : " + String.valueOf(minute) + " " + aMpM;
+                if(coffeOptionsFragment != null){
+                    coffeOptionsFragment.updateTimeLabel(timeSelected);
+
+                }
+                if(mealOptionsFragment != null){
+                    mealOptionsFragment.updateLabel(timeSelected);
+                }
+
+            }
+        }else{
+
+            timeSelected = String.valueOf(currentHour)
+                    + " : " + String.valueOf(minute) + " " + aMpM;
+            if(coffeOptionsFragment != null){
+                coffeOptionsFragment.updateTimeLabel(timeSelected);
+
+            }
+            if(mealOptionsFragment != null){
+                mealOptionsFragment.updateTimeLabel(timeSelected);
+            }
+
+        }
+
+        if(dateSelected != null && dateSelected.length() >0 && timeSelected != null && timeSelected.length()>0){
+            coffeOptionsFragment = (CoffeOptionsFragment) getSupportFragmentManager().findFragmentByTag(CoffeOptionsFragment.TAG);
+            mealOptionsFragment = (MealOptionsFragment) getSupportFragmentManager().findFragmentByTag(MealOptionsFragment.TAG);
+            if(coffeOptionsFragment != null){
+                coffeOptionsFragment.finishOption(CoffeOptionsFragment.DATE_OPTION);
+
+            }
+            if(mealOptionsFragment != null){
+                mealOptionsFragment.finishOption(CoffeOptionsFragment.DATE_OPTION);
+            }
+
+        }
+
+
+    }
 }

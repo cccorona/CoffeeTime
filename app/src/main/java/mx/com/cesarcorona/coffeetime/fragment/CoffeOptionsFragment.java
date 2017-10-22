@@ -2,6 +2,7 @@ package mx.com.cesarcorona.coffeetime.fragment;
 
 import android.Manifest;
 import android.animation.Animator;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
@@ -9,6 +10,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -56,6 +59,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.vision.text.Text;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -82,6 +86,7 @@ import mx.com.cesarcorona.coffeetime.activities.FilterTopicsActivity;
 import mx.com.cesarcorona.coffeetime.activities.SearchActivity;
 import mx.com.cesarcorona.coffeetime.adapter.CategoryAdapter;
 import mx.com.cesarcorona.coffeetime.adapter.TopicsAdapter;
+import mx.com.cesarcorona.coffeetime.dialogs.TimeSelectorDialog;
 import mx.com.cesarcorona.coffeetime.pojo.Categoria;
 import mx.com.cesarcorona.coffeetime.pojo.Topic;
 import mx.com.cesarcorona.coffeetime.pojo.User;
@@ -140,9 +145,10 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
 
 
 
-    private LinearLayout linearTimeAndDate , linearLocation, linearTopic, topicContent;
-    private ImageView timeFinish, locationFinish , topiFinish;
+    private LinearLayout linearTimeAndDate , linearLocation, linearTopic, topicContent,linearPeople,peopleContent;
+    private ImageView timeFinish, locationFinish , topiFinish,people_finish;
     private RelativeLayout timeAnDateContent ,locationContent;
+    private TextView timeTextView, locationTextView , topicTextView, peopleTextView;
 
 
     private Calendar myCalendar;
@@ -150,6 +156,7 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
     private ImageView dateSelector , timeSelector;
     private  OnActionSelectedListener onActionSelectedListener;
     private boolean isFirsttime;
+    private boolean firstTopic;
     private boolean fakeOnCreate;
 
 
@@ -176,7 +183,7 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
 
     private Button plusButton, minusButton;
     private TextView partyNumber;
-    private int number = 1;
+    private int number = 0;
     private ScrollView myScroolView;
     private boolean justCoffe;
 
@@ -218,10 +225,17 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
          rootView = inflater.inflate(R.layout.coffe_options_fragment,container,false);
         timeFinish = (ImageView) rootView.findViewById(R.id.date_finish);
         locationFinish = (ImageView)rootView.findViewById(R.id.location_finish);
+        people_finish = (ImageView)rootView.findViewById(R.id.people_finish);
         topiFinish = (ImageView)rootView.findViewById(R.id.topic_finish);
         topicSelector = (Spinner) rootView.findViewById(R.id.categorySpinner);
         databaseReference = FirebaseDatabase.getInstance().getReference(TOPICS_REFERENCE);
         searchButtonR = (RelativeLayout)rootView.findViewById(R.id.start_searching_button);
+
+
+        timeTextView = (TextView) rootView.findViewById(R.id.set_time_text);
+        locationTextView = (TextView) rootView.findViewById(R.id.set_location_text);
+        topicTextView = (TextView) rootView.findViewById(R.id.set_topic_text);
+        peopleTextView = (TextView) rootView.findViewById(R.id.set_people_text);
 
 
 
@@ -230,6 +244,8 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
         linearTimeAndDate = (LinearLayout) rootView.findViewById(R.id.linear_date_button);
         timeAnDateContent = (RelativeLayout)rootView.findViewById(R.id.date_time_content);
         locationContent = (RelativeLayout)rootView.findViewById(R.id.location_content);
+        linearPeople = (LinearLayout)rootView.findViewById(R.id.linear_people);
+        peopleContent = (LinearLayout) rootView.findViewById(R.id.people_content);
         topicContent = (LinearLayout)rootView.findViewById(R.id.topic_content);
         linearLocation= (LinearLayout)rootView.findViewById(R.id.linear_location_button);
         linearTopic = (LinearLayout) rootView.findViewById(R.id.linear_topyc);
@@ -258,6 +274,12 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
                 toggleFilters();
             }
         });
+        linearPeople.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tooglePeople();
+            }
+        });
 
 
 
@@ -284,11 +306,19 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
         timeSelector.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new TimePickerDialog(getActivity(),(TimePickerDialog.OnTimeSetListener)getActivity(), myCalendar.get(Calendar.HOUR_OF_DAY),
-                        myCalendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(getActivity())).show();
+                //new TimePickerDialog(getActivity(), android.R.style.Theme_Holo_Light_Dialog,(TimePickerDialog.OnTimeSetListener)getActivity(), myCalendar.get(Calendar.HOUR_OF_DAY),
+                //        myCalendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(getActivity())).show();
+
+                TimeSelectorDialog timeSelectorDialog = new TimeSelectorDialog();
+                timeSelectorDialog.setOnTimeSelectedInterface((TimeSelectorDialog.OnTimeSelectedInterface) getActivity());
+                timeSelectorDialog.show(getChildFragmentManager(),TimeSelectorDialog.TAG);
 
             }
         });
+        Topic selectATopi = new Topic();
+        selectATopi.setDisplay_title(getString(R.string.select_a_topic));
+        selectATopi.setType("topic");
+        allTopics.add(selectATopi);
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -361,6 +391,44 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
         });
 
 
+        plusButton =(Button) rootView.findViewById(R.id.plus_button);
+        minusButton =(Button) rootView.findViewById(R.id.minus_button);
+        partyNumber = (TextView)rootView.findViewById(R.id.agetext);
+        partyNumber.setText(""+number);
+        plusButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(number < 2){
+                    partyNumber.setText(""+ ++number);
+
+                }
+                if(number>0){
+                    people_finish.setVisibility(View.VISIBLE);
+                    peopleTextView.setText(" "+number+ getString(R.string.people));
+                    optionsIsFinish();
+                }
+            }
+        });
+
+        minusButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(number>=1){
+                    number--;
+                    partyNumber.setText(" "+number);
+                    peopleTextView.setText(" "+number+ getString(R.string.people));
+
+                }
+                if(number==0){
+                    people_finish.setVisibility(View.GONE);
+                    peopleTextView.setText(R.string.set_people_in_party);
+                    optionsIsFinish();
+
+                }
+            }
+        });
+
+
         return  rootView;
     }
 
@@ -375,6 +443,7 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         isFirsttime = true;
+        firstTopic = true;
         fakeOnCreate = true;
         justCoffe = true;
         allTopics = new LinkedList<>();
@@ -384,13 +453,16 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
     public void updateLabel(String date){
         dateSelected = date;
         dateEditText.setText(date);
-        optionsIsFinish();
+        //optionsIsFinish();
 
     }
 
     public void updateTimeLabel(String data){
         timeSelected = data;
         timeEditText.setText(data);
+        timeTextView.setText(dateSelected +"," + timeSelected);
+        timeFinish.setVisibility(View.VISIBLE);
+        toggleTimeAndDate();
         optionsIsFinish();
 
     }
@@ -427,6 +499,27 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
             }
             topicContent.setVisibility(GONE);
             timeAnDateContent.setVisibility(GONE);
+            peopleContent.setVisibility(GONE);
+    }
+
+
+    private void tooglePeople(){
+        if(isFirsttime){
+            if(onActionSelectedListener != null){
+                onActionSelectedListener.OnFirstOptionSelected();
+                isFirsttime = false ;
+            }
+        }
+        if(peopleContent.getVisibility() ==View.VISIBLE){
+            peopleContent.setVisibility(GONE);
+        }else{
+            peopleContent.setVisibility(View.VISIBLE);
+        }
+
+        topicContent.setVisibility(GONE);
+        timeAnDateContent.setVisibility(GONE);
+        locationContent.setVisibility(GONE);
+
     }
 
     private void toggleFilters(){
@@ -446,6 +539,7 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
         }
         locationContent.setVisibility(GONE);
         timeAnDateContent.setVisibility(GONE);
+        peopleContent.setVisibility(GONE);
     }
 
     private void toggleTimeAndDate(){
@@ -464,6 +558,7 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
         }
         topicContent.setVisibility(GONE);
         locationContent.setVisibility(GONE);
+        peopleContent.setVisibility(GONE);
 
 
       /*  Animator.AnimatorListener animatorListener = new Animator.AnimatorListener() {
@@ -623,34 +718,6 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
         });
 
 
-        plusButton =(Button) rootView.findViewById(R.id.plus_button);
-        minusButton =(Button) rootView.findViewById(R.id.minus_button);
-        partyNumber = (TextView)rootView.findViewById(R.id.agetext);
-        plusButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(number < 2){
-                    partyNumber.setText(""+ ++number);
-
-                }
-            }
-        });
-
-        minusButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(number>1){
-                    number--;
-                    partyNumber.setText(""+number);
-                }
-            }
-        });
-
-
-
-
-
-
 
 
     }
@@ -734,7 +801,9 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
                         if(plafes.getLongitude() == marker.getPosition().longitude){
                             placeSeleccionado = plafes;
                             locationFinish.setVisibility(View.VISIBLE);
+                            locationTextView.setText(placeSeleccionado.getName());
                             optionsIsFinish();
+                            toogleLocation();
 
                             break;
                         }
@@ -920,12 +989,31 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
         public void onItemSelected(AdapterView parent, View v, int position,
                                    long id) {
 
-            Toast.makeText(parent.getContext(),
-                    "Topic selected : " + parent.getItemAtPosition(position).toString(),
-                    Toast.LENGTH_SHORT).show();
-            topicSeleccionado = allTopics.get(position);
-            topiFinish.setVisibility(View.VISIBLE);
-            optionsIsFinish();
+
+            if(firstTopic){
+                 firstTopic = false;
+                 return;
+            }else{
+                if(position >0){
+
+                    topicSeleccionado = allTopics.get(position);
+                    topiFinish.setVisibility(View.VISIBLE);
+                    topicTextView.setText( topicSeleccionado.getDisplay_title());
+                    optionsIsFinish();
+
+                }else{
+                    topicSeleccionado = null;
+                    optionsIsFinish();
+                    topiFinish.setVisibility(View.GONE);
+                    topicTextView.setText(R.string.set_your_topic);
+
+
+                }
+                toggleFilters();
+            }
+
+
+
 
 
         }
@@ -941,8 +1029,12 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
 
 
     private void optionsIsFinish(){
-        if(dateSelected != null && dateSelected.length() >1 && timeSelected != null && timeSelected.length() >1 && placeSeleccionado != null){
+        if(dateSelected != null && dateSelected.length() >1 && timeSelected != null && timeSelected.length() >1 && placeSeleccionado != null && topicSeleccionado != null
+                && number >0){
             searchButtonR.setVisibility(View.VISIBLE);
+        }else{
+            searchButtonR.setVisibility(View.GONE);
+
         }
     }
 

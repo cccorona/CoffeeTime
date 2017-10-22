@@ -62,6 +62,15 @@
     <string name="open_location_settings">Turn your location </string>
     <string name="Cancel">Action canceled</string>
     <string name="logout">Logout</string>
+    <string name="select_a_topic">Select a topic</string>
+    <string name="set_people_in_party">set people in party</string>
+    <string name="topic_selected">Topic selected:</string>
+    <string name="people_party">People in your party:</string>
+    <string name="place_selected">Place selected:</string>
+    <string name="people">people</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="cancel">Cancel</string>
+    <string name="accept">Accept</string>
 
 </resources>
 
