@@ -2,6 +2,7 @@ package mx.com.cesarcorona.coffeetime.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,6 +44,7 @@ public class MyDatesActivity extends BaseAnimatedActivity implements MyDatesAdap
     private LinkedList<CoffeDate> availableDates;
     private ImageView homeButton;
     private DatabaseReference databaseReference;
+    private DatabaseReference deleteRerefence;
     private MyDatesAdapter myDatesAdapter;
     private ListView myDatesList;
     private LinearLayout lienarButton;
@@ -78,9 +82,12 @@ public class MyDatesActivity extends BaseAnimatedActivity implements MyDatesAdap
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                availableDates = new LinkedList<CoffeDate>();
+
 
                 for(DataSnapshot review:dataSnapshot.getChildren()){
                     CoffeDate object = review.getValue(CoffeDate.class);
+                    object.setDataBaseReference(review.getKey());
                     availableDates.add(object);
                 }
 
@@ -171,6 +178,23 @@ public class MyDatesActivity extends BaseAnimatedActivity implements MyDatesAdap
         Intent chatIntent = new Intent(this,ChatActivity.class);
         chatIntent.putExtras(extras);
         startActivity(chatIntent);
+
+    }
+
+    @Override
+    public void OnCancelDate(CoffeDate coffeDate) {
+         deleteRerefence = FirebaseDatabase.getInstance().getReference(USER_DATES_REFERENCE +"/" +FirebaseAuth.getInstance().getCurrentUser().getUid()
+          +"/"+coffeDate.getDataBaseReference());
+        deleteRerefence.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+
+            }
+        });
+    }
+
+    @Override
+    public void OnDeleteDate(CoffeDate coffeDate) {
 
     }
 

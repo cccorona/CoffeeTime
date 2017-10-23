@@ -59,8 +59,9 @@ public class CoffeDateAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        View rootView = LayoutInflater.from(context).inflate(R.layout.person_item_layout,parent,false);
+        View rootView = LayoutInflater.from(context).inflate(R.layout.my_dates_item_layout,parent,false);
         Button connectButon = (Button) rootView.findViewById(R.id.connect_button);
+        connectButon.setText(context.getString(R.string.connect));
         connectButon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,6 +70,16 @@ public class CoffeDateAdapter extends BaseAdapter {
                 }
             }
         });
+
+        TextView dateFromDate = (TextView)rootView.findViewById(R.id.set_time_text);
+        dateFromDate.setText(availableDates.get(position).getTime());
+
+        TextView peopleInDate = (TextView)rootView.findViewById(R.id.people_in_date);
+        peopleInDate.setText(""+availableDates.get(position).getRequestedPlaces());
+
+        TextView placeOfDate = (TextView)rootView.findViewById(R.id.place_of_date);
+        placeOfDate.setText(availableDates.get(position).getFavoritePlace());
+
 
         ImageView rateButton = (ImageView) rootView.findViewById(R.id.rate_person);
         rateButton.setOnClickListener(new View.OnClickListener() {

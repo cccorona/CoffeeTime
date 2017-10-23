@@ -193,8 +193,10 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
 
         CoffeDate date = new CoffeDate();
         date.setOpenDate(true);
+        date.setTime(dateSelected +"," + timeSelected);
         date.setUser1(FirebaseAuth.getInstance().getCurrentUser().getUid());
         date.setRequestedPlaces(partyNumber);
+        date.setFavoritePlace(placeSeleccionado.getName());
         databaseReference.push().setValue(date);
         hidepDialog();
         //Show meessga no match
@@ -298,6 +300,7 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 Toast.makeText(SearchActivity.this,"Coffe Date Complete",Toast.LENGTH_LONG).show();
+                                autoChat(dataSnapshot.getValue(CoffeDate.class));
 
                             }
 
@@ -353,6 +356,21 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
         chatIntent.putExtras(extras);
         startActivity(chatIntent);
 
+    }
 
+    private void autoChat(CoffeDate coffeDate){
+        Bundle extras = new Bundle();
+        String wichUser = "";
+        if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(coffeDate.getUser1())){
+            wichUser = coffeDate.getUser2();
+        }else{
+            wichUser = coffeDate.getUser1();
+        }
+        extras.putString(ChatActivity.KEY_COFFEDATE,wichUser);
+        extras.putString(ChatActivity.KEY_COFFEDATE_USER1,coffeDate.getUser1());
+        extras.putString(ChatActivity.KEY_COFFEDATE_USER2,coffeDate.getUser2());
+        Intent chatIntent = new Intent(this,ChatActivity.class);
+        chatIntent.putExtras(extras);
+        startActivity(chatIntent);
     }
 }

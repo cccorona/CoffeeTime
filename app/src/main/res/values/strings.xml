@@ -71,6 +71,8 @@
     <string name="aceptar">Aceptar</string>
     <string name="cancel">Cancel</string>
     <string name="accept">Accept</string>
+    <string name="no_matches_found_right_now_your_coffee_date_was_reserved">No matches found right now, your coffee date was reserved</string>
+    <string name="cancel_date">Cancel date</string>
 
 </resources>
 
