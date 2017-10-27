@@ -88,9 +88,11 @@ import mx.com.cesarcorona.coffeetime.adapter.CategoryAdapter;
 import mx.com.cesarcorona.coffeetime.adapter.TopicsAdapter;
 import mx.com.cesarcorona.coffeetime.dialogs.TimeSelectorDialog;
 import mx.com.cesarcorona.coffeetime.pojo.Categoria;
+import mx.com.cesarcorona.coffeetime.pojo.GPlace;
 import mx.com.cesarcorona.coffeetime.pojo.Topic;
 import mx.com.cesarcorona.coffeetime.pojo.User;
 import mx.com.cesarcorona.coffeetime.pojo.UserProfile;
+import mx.com.cesarcorona.coffeetime.utils.GooglePlaceSearch;
 import noman.googleplaces.NRPlaces;
 import noman.googleplaces.PlaceType;
 import noman.googleplaces.PlacesException;
@@ -193,6 +195,7 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
     private RelativeLayout searchButtonR;
 
     private String dateSelected , timeSelected;
+    private Button searchPlacesButton ;
 
 
 
@@ -230,6 +233,7 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
         topicSelector = (Spinner) rootView.findViewById(R.id.categorySpinner);
         databaseReference = FirebaseDatabase.getInstance().getReference(TOPICS_REFERENCE);
         searchButtonR = (RelativeLayout)rootView.findViewById(R.id.start_searching_button);
+        searchPlacesButton = (Button)rootView.findViewById(R.id.search_places_button);
 
 
         timeTextView = (TextView) rootView.findViewById(R.id.set_time_text);
@@ -425,6 +429,22 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
                     optionsIsFinish();
 
                 }
+            }
+        });
+
+
+        searchPlacesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(buscarText.length() >1){
+                    if(currentLocation == null){
+                        Toast.makeText(getActivity(),R.string.open_location_settings,Toast.LENGTH_LONG).show();
+                    }else{
+                        textSearch(buscarText.getText().toString());
+                    }
+                }
+
             }
         });
 
@@ -676,15 +696,15 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
         }
 
 
-        autocompleteFragment = (SupportPlaceAutocompleteFragment)
+       /* autocompleteFragment = (SupportPlaceAutocompleteFragment)
                 getChildFragmentManager().
                         findFragmentById(R.id.place_autocomplete_fragment);
         AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
                 .setTypeFilter(Place.TYPE_COUNTRY).setCountry("MX")
                 .build();
-        autocompleteFragment.setFilter(typeFilter);
+        autocompleteFragment.setFilter(typeFilter);*/
 
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+       /* autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
                 ubicacionPreferida = place;
@@ -699,7 +719,7 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
             public void onError(Status status) {
                 // TODO: Handle the error.
             }
-        });
+        });*/
 
 
         mGoogleApiClient = new GoogleApiClient
@@ -945,6 +965,66 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
                 .radius(500)
                 .build()
                 .execute();
+
+
+
+    }
+
+
+    private void textSearch(String keyToSearch){
+        GooglePlaceSearch client  = new GooglePlaceSearch(getActivity(),getString(R.string.google_api_key));
+        client.setLocation(currentLocation);
+        client.setGooglePlaceSearchInterface(new GooglePlaceSearch.GooglePlaceSearchInterface() {
+            @Override
+            public void OnPlacesFound(List<GPlace> places) {
+                placesFound = new LinkedList<>();
+                for(GPlace placeTo:places){
+                    noman.googleplaces.Place elPlace = new noman.googleplaces.Place();
+                    elPlace.setIcon(placeTo.getIcon());
+                    Location location = new Location("dmmy");
+                    location.setLatitude(placeTo.getGeometry().getLocation().getLat());
+                    location.setLongitude(placeTo.getGeometry().getLocation().getLng());
+                    elPlace.setLocation(location);
+                    elPlace.setName(placeTo.getName());
+                    elPlace.setPlaceId(placeTo.getPlaceId());
+                    elPlace.setTypes(placeTo.getTypes());
+                    elPlace.setVicinity(placeTo.getVicinity());
+                    placesFound.add(elPlace);
+                }
+                for(noman.googleplaces.Place place :placesFound){
+                    historicPlaces.add(place);
+                }
+
+                if(placesFound.size()>0){
+                    currentMap.clear();
+                }
+
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("UI thread", "I am the UI thread");
+
+                        //currentMap.clear();
+                        currentMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(latitud,longitud))
+                                .title(getString(R.string.current_position))).showInfoWindow();
+                        for(noman.googleplaces.Place place :placesFound){
+                            currentMap.addMarker(new MarkerOptions()
+                                    .position(new LatLng(place.getLatitude(),place.getLongitude()))
+                                    .title(place.getName())).showInfoWindow();
+                            // currentMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude()),MAX_ZOOM));
+                        }
+                    }
+                });
+
+            }
+
+            @Override
+            public void OnError(String message) {
+
+            }
+        });
+        client.placesByTextSearch(keyToSearch);
     }
 
 

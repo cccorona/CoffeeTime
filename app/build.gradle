@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "26.0.1"
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "mx.com.cesarcorona.coffeetime"
         minSdkVersion 16
@@ -68,6 +68,8 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.github.pwittchen:reactivenetwork-rx2:0.12.1'
     compile 'com.karumi:dexter:4.1.0'
+    compile 'com.android.volley:volley:1.0.0'
+
 
 
     testCompile 'junit:junit:4.12'

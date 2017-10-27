@@ -236,7 +236,8 @@
 
 
 
-                    <RelativeLayout
+                    <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_marginTop="10dp"
                         android:layout_marginRight="30dp"
                         android:layout_marginLeft="30dp"
@@ -244,30 +245,33 @@
                         android:layout_height="50dp">
 
                         <EditText
-                            android:visibility="gone"
+                            android:visibility="visible"
                             android:paddingLeft="20dp"
                             android:layout_centerInParent="true"
-                            android:inputType="none"
-                            android:editable="false"
-                            android:drawableLeft="@drawable/ic_search_black_48dp"
+                            android:inputType="text"
+                            android:editable="true"
                             android:id="@+id/buscar_text"
                             android:textSize="16sp"
                             android:hint="Buscar"
+                            android:layout_weight="80"
                             android:background="@drawable/white_rounded"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent" />
 
-                        <fragment
-                            android:layout_centerInParent="true"
-                            android:background="@drawable/white_rounded"
-                            android:id="@+id/place_autocomplete_fragment"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:name="com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment"
-                            />
+
+                        <Button
+                            android:id="@+id/search_places_button"
+                            android:background="@drawable/ic_search_black_48dp"
+                            android:layout_weight="20"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
 
 
-                    </RelativeLayout>
+
+
+
+
+                    </LinearLayout>
 
 
                     <RelativeLayout
