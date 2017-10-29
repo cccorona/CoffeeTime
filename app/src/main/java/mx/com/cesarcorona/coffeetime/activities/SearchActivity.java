@@ -299,8 +299,8 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
                         myDatesReferemce2.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                Toast.makeText(SearchActivity.this,"Coffe Date Complete",Toast.LENGTH_LONG).show();
-                                autoChat(dataSnapshot.getValue(CoffeDate.class));
+                                Toast.makeText(SearchActivity.this, R.string.chat_complete,Toast.LENGTH_LONG).show();
+                               // autoChat(dataSnapshot.getValue(CoffeDate.class));
 
                             }
 

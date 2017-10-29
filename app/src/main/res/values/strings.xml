@@ -73,6 +73,8 @@
     <string name="accept">Accept</string>
     <string name="no_matches_found_right_now_your_coffee_date_was_reserved">No matches found right now, your coffee date was reserved</string>
     <string name="cancel_date">Cancel date</string>
+    <string name="coffe_time_complete">Coffe Date Complete, you can chat now</string>
+    <string name="chat_complete">Coffee Date complete, now you can chat</string>
 
 </resources>
 

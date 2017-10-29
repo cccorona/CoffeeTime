@@ -99,6 +99,16 @@ public class MyDatesAdapter extends BaseAdapter {
         TextView placeOfDate = (TextView)rootView.findViewById(R.id.place_of_date);
         placeOfDate.setText(availableDates.get(position).getFavoritePlace());
 
+        ImageView deleteButton = (ImageView)rootView.findViewById(R.id.delete_button);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(matchingInterface != null){
+                    matchingInterface.OnDeleteDate(availableDates.get(position));
+                }
+            }
+        });
+
 
         ImageView chatButton = (ImageView) rootView.findViewById(R.id.message_persone);
         chatButton.setOnClickListener(new View.OnClickListener() {
@@ -122,6 +132,9 @@ public class MyDatesAdapter extends BaseAdapter {
             dateCoffe = dateParts[0];
         }
 
+        dateCoffe = "10/25/17";
+
+
         try {
             Date date = sdf.parse(dateCoffe);
             if(now.before(date)){
@@ -144,6 +157,7 @@ public class MyDatesAdapter extends BaseAdapter {
                         }
                     }
                 });
+                deleteButton.setVisibility(View.VISIBLE);
 
             }
 

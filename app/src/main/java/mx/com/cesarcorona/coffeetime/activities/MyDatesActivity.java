@@ -77,7 +77,7 @@ public class MyDatesActivity extends BaseAnimatedActivity implements MyDatesAdap
         lienarButton = (LinearLayout) findViewById(R.id.linear_back_button);
         availableDates = new LinkedList<>();
         myDatesList = (ListView) findViewById(R.id.list);
-
+        showpDialog();
         databaseReference = FirebaseDatabase.getInstance().getReference(USER_DATES_REFERENCE + "/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -100,6 +100,11 @@ public class MyDatesActivity extends BaseAnimatedActivity implements MyDatesAdap
                 myDatesList.setAdapter(myDatesAdapter);*/
 
                 hidepDialog();
+                if(availableDates.size()==0){
+                    myDatesAdapter = new MyDatesAdapter(MyDatesActivity.this,availableDates);
+                    myDatesAdapter.setMatchingInterface(MyDatesActivity.this);
+                    myDatesList.setAdapter(myDatesAdapter);
+                }
 
 
             }
@@ -182,20 +187,47 @@ public class MyDatesActivity extends BaseAnimatedActivity implements MyDatesAdap
     }
 
     @Override
-    public void OnCancelDate(CoffeDate coffeDate) {
-         deleteRerefence = FirebaseDatabase.getInstance().getReference(USER_DATES_REFERENCE +"/" +FirebaseAuth.getInstance().getCurrentUser().getUid()
+    public void OnCancelDate(final CoffeDate coffeDate) {
+        showpDialog();
+         deleteRerefence = FirebaseDatabase.getInstance().getReference(USER_DATES_REFERENCE +"/" +coffeDate.getUser1()
           +"/"+coffeDate.getDataBaseReference());
         deleteRerefence.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-
+                if(task.isSuccessful()){
+                    deleteRerefence = FirebaseDatabase.getInstance().getReference(USER_DATES_REFERENCE +"/" +coffeDate.getUser2()
+                            +"/"+coffeDate.getDataBaseReference());
+                    deleteRerefence.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                           if(task.isSuccessful()){
+                               hidepDialog();
+                           }else{
+                               hidepDialog();
+                           }
+                        }
+                    });
+                }else{
+                    hidepDialog();
+                }
             }
         });
     }
 
     @Override
     public void OnDeleteDate(CoffeDate coffeDate) {
+        showpDialog();
+        deleteRerefence = FirebaseDatabase.getInstance().getReference(USER_DATES_REFERENCE +"/" +FirebaseAuth.getInstance().getCurrentUser().getUid()
+                +"/"+coffeDate.getDataBaseReference());
+        deleteRerefence.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
 
+                }
+                hidepDialog();
+            }
+        });
     }
 
     private void showpDialog() {
@@ -235,12 +267,14 @@ public class MyDatesActivity extends BaseAnimatedActivity implements MyDatesAdap
             myDatesAdapter = new MyDatesAdapter(MyDatesActivity.this,availableDates);
             myDatesAdapter.setMatchingInterface(MyDatesActivity.this);
             myDatesList.setAdapter(myDatesAdapter);
+            numberOfSrikes = 0;
+            numberErrors = 0;
 
-            //  hidepDialog();
+             hidepDialog();
 
 
         }else {
-            // hidepDialog();
+             hidepDialog();
 
             //Show error
         }
