@@ -32,6 +32,7 @@ import mx.com.cesarcorona.coffeetime.R;
 import mx.com.cesarcorona.coffeetime.adapter.CoffeDateAdapter;
 import mx.com.cesarcorona.coffeetime.pojo.Categoria;
 import mx.com.cesarcorona.coffeetime.pojo.CoffeDate;
+import mx.com.cesarcorona.coffeetime.pojo.HistorialDate;
 import mx.com.cesarcorona.coffeetime.pojo.Topic;
 
 import static mx.com.cesarcorona.coffeetime.activities.CoffeTimeActiviy.KEY_DATE;
@@ -45,12 +46,13 @@ import static mx.com.cesarcorona.coffeetime.activities.FilterTopicsActivity.KEY_
 import static mx.com.cesarcorona.coffeetime.activities.FilterTopicsActivity.KEY_TOPIC;
 import static mx.com.cesarcorona.coffeetime.activities.JustCoffeActivity.KEY_JUST_COFFE;
 
-public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.FillInformationInterface , CoffeDateAdapter.MatchingInterface {
+public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.FillInformationInterface , CoffeDateAdapter.MatchingInterface, HistorialDate.FillDateInterface {
 
 
     public static String TAG = SearchActivity.class.getSimpleName();
     public static String DATES_REFERENCE = "dates/";
     public static String USER_DATES_REFERENCE ="mydates";
+    public static String ALL_DATES_REFERENCE ="alldates";
 
 
     private DatabaseReference databaseReference;
@@ -66,6 +68,8 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
     private String DATA_BASE_PATH;
     private ProgressDialog pDialog;
     private LinkedList<CoffeDate> availableDates;
+    private LinkedList<HistorialDate> allDatesInTime;
+    private int allDatesInTimeCounter;
     private String keyDate;
     private int numberOfSrikes;
     private int numberErrors;
@@ -76,6 +80,8 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
     private ImageView animatedLog;
     private TextView not_match;
     private ImageView homeButton;
+
+    private String allDAtseReference;
 
     private static final long SPLASH_SCREEN_DELAY = 3000;
 
@@ -188,18 +194,86 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
             public void run() {
                 animatedLog.setVisibility(View.GONE);
                 not_match.setVisibility(View.VISIBLE);
+                Toast.makeText(SearchActivity.this,R.string.no_matches_found_right_now_your_coffee_date_was_reserved,Toast.LENGTH_LONG).show();
+
             }
         });
 
         CoffeDate date = new CoffeDate();
+        date.setLatitud(placeSeleccionado.getLatitude());
+        date.setLongitud(placeSeleccionado.getLongitude());
         date.setOpenDate(true);
         date.setTime(dateSelected +"," + timeSelected);
         date.setUser1(FirebaseAuth.getInstance().getCurrentUser().getUid());
         date.setRequestedPlaces(partyNumber);
         date.setFavoritePlace(placeSeleccionado.getName());
-        databaseReference.push().setValue(date);
-        hidepDialog();
+        String reference = databaseReference.toString();
+        int start = reference.indexOf("dates");
+        allDAtseReference = reference.substring(start);
+
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        String key = databaseReference.push().getKey();
+        allDAtseReference = allDAtseReference +"/" +key;
+        databaseReference.child(key).setValue(date);
+
+        //hidepDialog();
         //Show meessga no match
+
+
+        alternativeSerach();
+
+
+    }
+
+
+
+    private void alternativeSerach(){
+        allDatesInTime = new LinkedList<>();
+        availableDates = new LinkedList<>();
+
+        allDatesInTimeCounter = 0;
+        DatabaseReference databaseReference2 = FirebaseDatabase.getInstance().getReference(ALL_DATES_REFERENCE);
+        databaseReference2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot dateHistorial:dataSnapshot.getChildren()){
+                    HistorialDate date = dateHistorial.getValue(HistorialDate.class);
+                    allDatesInTime.add(date);
+
+                }
+
+                if(allDatesInTime.size() >0){
+                    not_match.setVisibility(View.GONE);
+                }
+                for(HistorialDate historialDate:allDatesInTime){
+                    historialDate.setFillDateInterface(SearchActivity.this);
+                    historialDate.fillDAte();
+                }
+                final DatabaseReference firebaseDatabase =FirebaseDatabase.getInstance().getReference(ALL_DATES_REFERENCE);
+                HistorialDate historialDate = new HistorialDate();
+                historialDate.setDateReference(allDAtseReference);
+                firebaseDatabase.push().setValue(historialDate);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     private String buildDataBasePath(){
@@ -372,5 +446,15 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
         Intent chatIntent = new Intent(this,ChatActivity.class);
         chatIntent.putExtras(extras);
         startActivity(chatIntent);
+    }
+
+    @Override
+    public void OnDateFilled(CoffeDate coffeDate) {
+
+        allDatesInTimeCounter ++;
+        availableDates.add(coffeDate);
+        if(allDatesInTimeCounter == allDatesInTime.size()){
+            generateMatchingCards();
+        }
     }
 }

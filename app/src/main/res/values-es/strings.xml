@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CoffeeTime</string>
+    <string name="app_name_splash">Coffee Time</string>
+
+
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="facebook_application_id" translatable="false">1918159491760571</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">6d54ab3d65d4b9c0a13a768469c270c6</string>
+    <string name="twitter_consumer_key" translatable="false">rfosAWHO9cQNrIUP910j8HYOg</string>
+    <string name="twitter_consumer_secret" translatable="false">rZvALWnJ19qV0J6jMgP7fOi8fNwHhoBZwKijCnkRms2V9eMhO6</string>
+    <string name="google_place_api_key">AIzaSyD_l3WeHf0w1YjcLjGDG1jaG-w_ap3Aq3U</string>
+    <string name="tos_url">www.cesarcorona.com.mx</string>
+    <string name="sign_in_cancelled">Cancelo</string>
+    <string name="no_internet_connection">Red no disponible</string>
+    <string name="unknown_error">error desconocido</string>
+    <string name="cafe">Coffee Time</string>
+    <string name="merienda">Comidas</string>
+    <string name="title_activity_coffe_time_activiy">CoffeTimeActiviy</string>
+    <string name="current_position">Estas aqui</string>
+    <string name="favorite_place">Lugar favorito</string>
+    <string name="set_your_coffee_time">Selecciona la hora del cafe</string>
+    <string name="when">Cuando?</string>
+    <string name="time">A que hora?</string>
+    <string name="warning">Es necesario seleccionar a que hora</string>
+    <string name="what_do_you_want_to_eat">¿Que quieres comer?</string>
+    <string name="selected_category">Selecciona la categoria</string>
+    <string name="selected_topic">Es necesario seleccionar un topico</string>
+    <string name="what_topic_do_you_prefer">Que tema prefieres?</string>
+    <string name="search">Buscando</string>
+    <string name="splash_sub">Todo se trata de conocer nuevos amigos</string>
+    <string name="place_Selected">Es necesario seleccionar un lugar del mapa</string>
+    <string name="topic">Topico?</string>
+    <string name="please_wait">Por favor espere.</string>
+    <string name="set_your_date_and_time">Selecciona la fecha \n y la hora</string>
+    <string name="set_your_location">Selecciona un lugar</string>
+    <string name="set_your_topic">Selecciona un tema</string>
+    <string name="please_wait_d">Please wait...</string>
+    <string name="start_searching">Empezar a buscar</string>
+    <string name="title_activity_main_settings">MainSettingsActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Configuración</string>
+    <string name="settings">Configuración</string>
+    <string name="about_us">Nosotros</string>
+    <string name="contact_us">Contactanos</string>
+    <string name="support">Soporte</string>
+    <string name="q_a"><![CDATA[Q&A]]></string>
+    <string name="enter_message">Escribe un mensaje primero!</string>
+    <string name="chats">Chats</string>
+    <string name="this_is_a_test_review_if_you_can_se_this_something_was_wrong_contact_to_contacto_cesarcorona_com_mx">This is a test review, if you can se this something was wrong contact to contacto@cesarcorona.com.mx</string>
+    <string name="my_reviews">Mis calificaciones</string>
+    <string name="my_dates">Mis citas</string>
+    <string name="connect">Conectar</string>
+    <string name="rate_this_date">Califica</string>
+    <string name="leave_your_comments">deja tus comentarios</string>
+    <string name="set_your_prefered_meal">SET YOUR \nPREFERED MEAL</string>
+    <string name="gps_network_not_enabled">No tienes acceso a internet</string>
+    <string name="open_location_settings">Prende tu localización </string>
+    <string name="Cancel">Accion cancelada</string>
+    <string name="logout">Salir</string>
+    <string name="select_a_topic">Seleccciona un tema</string>
+    <string name="set_people_in_party">Selecciona cuantas personas</string>
+    <string name="topic_selected">Tema seleccionado:</string>
+    <string name="people_party">Personas en tu grupo:</string>
+    <string name="place_selected">Lugar seleccionado:</string>
+    <string name="people">personas</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="accept">Aceptar</string>
+    <string name="no_matches_found_right_now_your_coffee_date_was_reserved">No se encontraron citas, tu cita sera reservada</string>
+    <string name="cancel_date">Cancelar cita</string>
+    <string name="coffe_time_complete">Cita confirmada, ahora puedes chatear</string>
+    <string name="chat_complete">Cita confirmada, ahora puedes chatear</string>
+</resources>
