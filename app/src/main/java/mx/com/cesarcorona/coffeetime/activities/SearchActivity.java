@@ -84,6 +84,7 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
     private String allDAtseReference;
 
     private static final long SPLASH_SCREEN_DELAY = 3000;
+    private DatabaseReference databaseReferenceDate;
 
 
 
@@ -348,10 +349,17 @@ public class SearchActivity extends BaseAnimatedActivity implements CoffeDate.Fi
     @Override
     public void OnConnectButton(CoffeDate coffeDate) {
 
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(DATA_BASE_PATH+"/"+coffeDate.getDataBaseReference());
-        databaseReference.child("user2").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        databaseReference.child("openDate").setValue(false);
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReferenceDate = FirebaseDatabase.getInstance().getReference(DATA_BASE_PATH+"/"+coffeDate.getDataBaseReference());
+
+        if(coffeDate.isAlternativeFill()){
+            int start = coffeDate.getAlternatiVeReference().indexOf("dates");
+            String startReferece = coffeDate.getAlternatiVeReference().substring(start);
+            databaseReferenceDate = FirebaseDatabase.getInstance().getReference(startReferece);
+        }
+
+        databaseReferenceDate.child("user2").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        databaseReferenceDate.child("openDate").setValue(false);
+        databaseReferenceDate.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 final CoffeDate date = dataSnapshot.getValue(CoffeDate.class);

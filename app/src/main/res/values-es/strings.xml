@@ -7,10 +7,6 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
-    <string name="facebook_application_id" translatable="false">1918159491760571</string>
-    <string name="facebook_login_protocol_scheme" translatable="false">6d54ab3d65d4b9c0a13a768469c270c6</string>
-    <string name="twitter_consumer_key" translatable="false">rfosAWHO9cQNrIUP910j8HYOg</string>
-    <string name="twitter_consumer_secret" translatable="false">rZvALWnJ19qV0J6jMgP7fOi8fNwHhoBZwKijCnkRms2V9eMhO6</string>
     <string name="google_place_api_key">AIzaSyD_l3WeHf0w1YjcLjGDG1jaG-w_ap3Aq3U</string>
     <string name="tos_url">www.cesarcorona.com.mx</string>
     <string name="sign_in_cancelled">Cancelo</string>
@@ -37,7 +33,7 @@
     <string name="set_your_date_and_time">Selecciona la fecha \n y la hora</string>
     <string name="set_your_location">Selecciona un lugar</string>
     <string name="set_your_topic">Selecciona un tema</string>
-    <string name="please_wait_d">Please wait...</string>
+    <string name="please_wait_d">Por favor espere...</string>
     <string name="start_searching">Empezar a buscar</string>
     <string name="title_activity_main_settings">MainSettingsActivity</string>
 
@@ -76,4 +72,11 @@
     <string name="cancel_date">Cancelar cita</string>
     <string name="coffe_time_complete">Cita confirmada, ahora puedes chatear</string>
     <string name="chat_complete">Cita confirmada, ahora puedes chatear</string>
+    <string name="people_in_your_party">Personas en tu grupo?</string>
+    <string name="new_match">Cita Coffe Time</string>
+    <string name="new_match_body">Encontramos una cita , revisa tus citas</string>
+    <string name="new_message_title">Nuevo Mensaje</string>
+    <string name="new_message_body">Tienes nuevos mensajes en el chat</string>
+
+
 </resources>

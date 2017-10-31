@@ -75,6 +75,11 @@
     <string name="cancel_date">Cancel date</string>
     <string name="coffe_time_complete">Coffe Date Complete, you can chat now</string>
     <string name="chat_complete">Coffee Date complete, now you can chat</string>
+    <string name="people_in_your_party">People in your party?</string>
+    <string name="new_match">Coffe Time Match</string>
+    <string name="new_match_body">New coffee date was found, check your dates</string>
+    <string name="new_message_title">New message</string>
+    <string name="new_message_body">New message in chats</string>
 
 </resources>
 

@@ -56,9 +56,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
+        String title="";
+        String body ="";
+        if(notification.getTitle().equals("1")){
+            title = getString(R.string.new_match);
+            body = getString(R.string.new_match_body);
+        }else if(notification.getTitle().equals("2")){
+            title = getString(R.string.new_message_title);
+            body = getString(R.string.new_message_body);
+        }
+
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setContentTitle(notification.getTitle())
-                .setContentText(notification.getBody())
+                .setContentTitle(title)
+                .setContentText(body)
                 .setAutoCancel(true)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setContentIntent(pendingIntent)

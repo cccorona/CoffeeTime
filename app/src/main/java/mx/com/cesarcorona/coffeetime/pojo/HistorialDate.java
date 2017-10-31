@@ -9,6 +9,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
 
+import static mx.com.cesarcorona.coffeetime.activities.CoffeTimeActiviy.USER_PROFILES_REFERENCE;
+
 /**
  * Created by ccabrera on 29/10/17.
  */
@@ -57,8 +59,10 @@ public class HistorialDate implements Serializable {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(fillDateInterface != null){
-                    CoffeDate coffeDate = dataSnapshot.getValue(CoffeDate.class);
+                    final CoffeDate coffeDate = dataSnapshot.getValue(CoffeDate.class);
                     coffeDate.setDataBaseReference(dataSnapshot.getKey());
+                    coffeDate.setAlternativeFill(true);
+                    coffeDate.setAlternatiVeReference(dataSnapshot.getRef().toString());
                     fillDateInterface.OnDateFilled(coffeDate);
                 }
             }

@@ -37,6 +37,10 @@ public class CoffeDate implements Serializable {
     FillInformationInterface fillInformationInterface;
     @Exclude
     private String dataBaseReference;
+    @Exclude
+    private String alternatiVeReference;
+    @Exclude
+    private boolean alternativeFill;
 
 
     public interface FillInformationInterface{
@@ -176,5 +180,22 @@ public class CoffeDate implements Serializable {
 
     public void setOpenDate(Boolean openDate) {
         this.openDate = openDate;
+    }
+
+
+    public String getAlternatiVeReference() {
+        return alternatiVeReference;
+    }
+
+    public void setAlternatiVeReference(String alternatiVeReference) {
+        this.alternatiVeReference = alternatiVeReference;
+    }
+
+    public boolean isAlternativeFill() {
+        return alternativeFill;
+    }
+
+    public void setAlternativeFill(boolean alternativeFill) {
+        this.alternativeFill = alternativeFill;
     }
 }

@@ -493,7 +493,7 @@
                         android:keepScreenOn="true"
                         android:gravity="left"
                         android:padding="18dp"
-                        android:text="People in your party?"
+                        android:text="@string/people_in_your_party"
                         android:textColor="#000"
                         android:textSize="22sp"
                         android:textStyle="bold" />

@@ -132,7 +132,7 @@ public class MyDatesAdapter extends BaseAdapter {
             dateCoffe = dateParts[0];
         }
 
-        dateCoffe = "10/25/17";
+       // dateCoffe = "10/25/17";
 
 
         try {
