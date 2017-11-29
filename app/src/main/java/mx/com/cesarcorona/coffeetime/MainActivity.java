@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -186,7 +187,16 @@ public class MainActivity extends AppCompatActivity implements   DatePickerDialo
         Date dateOnCAlendar =myCalendar.getTime() ;
         Date now =Calendar.getInstance().getTime();
         fechaEnCalendario = dateOnCAlendar;
-        if(dateOnCAlendar.after(now) || dateOnCAlendar.equals(now)){
+
+        long diff = dateOnCAlendar.getTime() - now.getTime() ;
+        float days = (diff / (1000*60*60*24));
+        boolean isToday = false;
+        if(days>0 && days <1){
+            isToday = true;
+        }
+        Log.e(TAG,"Dias de diferencia:"+days);
+
+        if(dateOnCAlendar.after(now) || isToday){
             coffeOptionsFragment = (CoffeOptionsFragment) getSupportFragmentManager().findFragmentByTag(CoffeOptionsFragment.TAG);
             coffeOptionsFragment.updateLabel(sdf.format(myCalendar.getTime()));
             dateSelected = sdf.format(myCalendar.getTime());

@@ -397,7 +397,15 @@ public class MainSettingsActivity extends BaseAnimatedActivity
         Date dateOnCAlendar =myCalendar.getTime() ;
         Date now =Calendar.getInstance().getTime();
         fechaEnCalendario = dateOnCAlendar;
-        if(dateOnCAlendar.after(now) || dateOnCAlendar.equals(now)){
+
+        long diff = dateOnCAlendar.getTime() - now.getTime() ;
+        float days = (diff / (1000*60*60*24));
+        boolean isToday = false;
+        if(days>=0 && days <1){
+            isToday = true;
+        }
+
+        if(dateOnCAlendar.after(now) || isToday){
             coffeOptionsFragment = (CoffeOptionsFragment) getSupportFragmentManager().findFragmentByTag(CoffeOptionsFragment.TAG);
             if(coffeOptionsFragment != null){
                 coffeOptionsFragment.updateLabel(sdf.format(myCalendar.getTime()));

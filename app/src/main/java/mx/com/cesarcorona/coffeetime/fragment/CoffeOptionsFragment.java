@@ -873,7 +873,7 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
         latitud = currentLocation.getLatitude();
         longitud = currentLocation.getLongitude();
         if(justCoffe){
-            justCoffeSEarch();
+            starbucksSearch();
 
         }
 
@@ -969,6 +969,16 @@ public class CoffeOptionsFragment extends Fragment implements OnMapReadyCallback
 
 
     }
+
+
+    private void starbucksSearch(){
+        if(currentLocation != null){
+            textSearch("Starbucks");
+        }else{
+            Toast.makeText(getActivity(),getActivity().getString(R.string.open_location_settings),Toast.LENGTH_LONG).show();
+        }
+    }
+
 
 
     private void textSearch(String keyToSearch){
